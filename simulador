@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio Virtual de Emprendimiento · Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens ===== */
+:root{
+  --bg:#F3F6FB; --surface:#FFFFFF; --surface-2:#E9EEF7; --ink:#16224A; --muted:#55618A; --line:#D2DAEA;
+  --primary:#2343B0; --primary-hover:#1A348F; --on-primary:#FFFFFF; --primary-soft:#E3E9FB;
+  --accent:#F2A516; --accent-soft:#FFF2D3; --accent-ink:#7A4E00;
+  --real:#0E8468; --real-bg:#DFF3EC; --sim:#6A4BC4; --sim-bg:#ECE6FB;
+  --danger:#B53925; --danger-bg:#FBE7E2;
+  --r-s:6px; --r-m:10px; --r-l:18px;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,-apple-system,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1430; --surface:#161E3F; --surface-2:#1F294F; --ink:#E7ECF8; --muted:#A0AACB; --line:#2F3B68;
+    --primary:#88A2FF; --primary-hover:#A3B7FF; --on-primary:#0E1430; --primary-soft:#24305C;
+    --accent:#F5B83D; --accent-soft:#3A2E12; --accent-ink:#F7CB72;
+    --real:#43CBA4; --real-bg:#123630; --sim:#B29CF5; --sim-bg:#2A2453;
+    --danger:#FF8C75; --danger-bg:#3D1E1A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1430; --surface:#161E3F; --surface-2:#1F294F; --ink:#E7ECF8; --muted:#A0AACB; --line:#2F3B68;
+  --primary:#88A2FF; --primary-hover:#A3B7FF; --on-primary:#0E1430; --primary-soft:#24305C;
+  --accent:#F5B83D; --accent-soft:#3A2E12; --accent-ink:#F7CB72;
+  --real:#43CBA4; --real-bg:#123630; --sim:#B29CF5; --sim-bg:#2A2453;
+  --danger:#FF8C75; --danger-bg:#3D1E1A; color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{height:100%;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;margin:0 0 .4em;letter-spacing:-.012em}
+h1{font-size:clamp(1.9rem,3.4vw,2.6rem);font-weight:800}
+h2{font-size:clamp(1.45rem,2.4vw,1.8rem);font-weight:800}
+h3{font-size:1.15rem;font-weight:700}
+h4{font-size:1rem;font-weight:700}
+p{margin:0 0 .8em}
+a{color:var(--primary)}
+img{max-width:100%}
+.lead{font-size:1.08rem;color:var(--muted);max-width:62ch}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== Controles ===== */
+.btn{font:inherit;font-weight:700;border-radius:999px;padding:.5em 1.15em;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;min-height:42px;display:inline-flex;align-items:center;gap:.4em;white-space:nowrap}
+.btn:hover{border-color:var(--primary)}
+.btn.primary{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.btn.primary:hover{background:var(--primary-hover)}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.sm{min-height:34px;padding:.25em .85em;font-size:.88rem}
+.btn.danger{color:var(--danger)}
+.btn.block{width:100%;justify-content:center}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.linkbtn{background:none;border:none;color:var(--primary);font:inherit;cursor:pointer;padding:.3em 0;text-decoration:underline}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-s);padding:.5em .7em;width:100%;min-height:42px}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 3px var(--primary-soft)}
+textarea{min-height:88px;resize:vertical;line-height:1.5}
+input[type=radio],input[type=checkbox]{width:auto;min-height:auto;accent-color:var(--primary)}
+input[type=file]{padding:.4em}
+.field{display:grid;gap:.3rem;font-weight:700;font-size:.94rem}
+.field small,.hint{font-weight:400;color:var(--muted);font-size:.86rem}
+.row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.9rem}
+.stack{display:grid;gap:1rem}
+.check{display:flex;gap:.5rem;align-items:flex-start;font-weight:400}
+
+/* ===== Etiquetas de estado ===== */
+.tag{display:inline-flex;align-items:center;gap:.35em;font-size:.8rem;font-weight:700;padding:.12em .65em;border-radius:999px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.tag.real{background:var(--real-bg);color:var(--real)}
+.tag.sim{background:var(--sim-bg);color:var(--sim);outline:1.5px dashed var(--sim);outline-offset:-1.5px}
+.tag.pend{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.ok{background:var(--real-bg);color:var(--real)}
+.tag.bad{background:var(--danger-bg);color:var(--danger)}
+.tag.plan{background:var(--primary-soft);color:var(--primary)}
+
+/* Real vs simulado: la distinción visual central de la plataforma */
+.rec{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--real);border-radius:var(--r-m);padding:.9rem 1rem}
+.rec.sim{border-left:5px dashed var(--sim);background:repeating-linear-gradient(135deg,var(--sim-bg) 0 9px,var(--surface) 9px 18px)}
+.rec.sim .rec-body{background:var(--surface);border-radius:var(--r-s);padding:.5rem .7rem;margin-top:.4rem}
+.rec.neutral{border-left-color:var(--line)}
+.rec-head{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.rec-head h4{margin:0}
+.rec-list{display:grid;gap:.7rem}
+
+/* ===== Barra superior ===== */
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:1rem;padding:.6rem 1rem;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:.55rem;background:none;border:none;color:var(--ink);font:800 1.02rem var(--display);cursor:pointer;padding:.2rem}
+.brand svg{width:34px;height:34px;flex:none}
+.tb-mid{flex:1;display:flex;gap:.8rem;align-items:center;min-width:0}
+.tb-project{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.savestate{font-size:.85rem;color:var(--real);white-space:nowrap}
+.savestate.err{color:var(--danger)}
+.tb-user{display:flex;align-items:center;gap:.5rem}
+.who{display:grid;text-align:right;line-height:1.2}
+.who small{color:var(--muted)}
+@media (max-width:720px){.brand span,.who,.tb-project{display:none}}
+
+/* ===== Shell del proyecto ===== */
+.shell{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:calc(100vh - 60px)}
+.rail{border-right:1px solid var(--line);background:var(--surface);padding:1rem .7rem;position:sticky;top:59px;height:calc(100vh - 59px);overflow:auto}
+.rail-back{display:block;margin:0 .4rem .8rem}
+.rail ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.stage{display:grid;grid-template-columns:30px 1fr;gap:.2rem .6rem;align-items:center;width:100%;text-align:left;background:none;border:none;border-radius:var(--r-m);padding:.55rem .6rem;color:var(--ink);font:inherit;cursor:pointer}
+.stage:hover{background:var(--surface-2)}
+.stage[aria-current="page"]{background:var(--primary-soft)}
+.stage .num{grid-row:span 2;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:800 .9rem var(--display);border:2px solid var(--line);color:var(--muted);background:var(--surface)}
+.stage.done .num{background:var(--real);border-color:var(--real);color:var(--surface)}
+.stage.practice .num{border-style:dashed;border-color:var(--sim);color:var(--sim)}
+.stage .lbl{font-weight:700;font-size:.95rem}
+.bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .35s ease}
+.bar.full>i{background:var(--real)}
+.rail-note{margin:1.2rem .4rem 0;font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.9rem}
+.content{padding:2rem clamp(1rem,3vw,2.5rem) 4rem;max-width:1120px;width:100%}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:sticky;top:57px;z-index:15;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:.5rem;overflow-x:auto}
+  .rail ol{display:flex;gap:4px}
+  .stage{grid-template-columns:26px auto;white-space:nowrap;padding:.4rem .6rem}
+  .stage .num{width:26px;height:26px;font-size:.8rem;grid-row:auto}
+  .stage .bar{display:none}
+  .rail-back,.rail-note{display:none}
+}
+
+/* ===== Páginas ===== */
+.page{width:100%;max-width:1080px;margin:0 auto;padding:2rem clamp(1rem,3vw,2rem) 4rem}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.6rem}
+.sec-head{margin-bottom:1.4rem}
+.sec-head .lead{margin-bottom:.4rem}
+.block{margin-top:2rem}
+.block>h3{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);padding:1.2rem 1.3rem}
+.panel.tinted{background:var(--surface-2);border-color:transparent}
+.addform{background:var(--surface-2);border-radius:var(--r-l);padding:1.1rem 1.2rem;display:grid;gap:.8rem}
+.addform h4{margin:0}
+.empty{border:2px dashed var(--line);border-radius:var(--r-l);padding:1.5rem;text-align:center;color:var(--muted)}
+.feedback{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:var(--r-m);padding:.8rem 1rem;margin-top:.8rem}
+.feedback b{color:var(--ink)}
+.feedback p{margin:.2rem 0 0}
+.notice{display:flex;gap:.7rem;align-items:flex-start;padding:.8rem 1rem;border-radius:var(--r-m);background:var(--primary-soft);font-size:.94rem}
+.notice.sim{background:repeating-linear-gradient(135deg,var(--sim-bg) 0 9px,transparent 9px 18px);border:1.5px dashed var(--sim)}
+.notice.warn{background:var(--danger-bg)}
+
+/* Proyectos (inicio) */
+.proj-list{display:grid;gap:1rem}
+.proj{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);padding:1.2rem 1.3rem}
+.proj h3{margin:0 0 .25rem}
+.route-mini{display:flex;gap:4px;margin-top:.8rem;max-width:420px}
+.route-mini span{flex:1;height:8px;border-radius:99px;background:var(--surface-2);position:relative;overflow:hidden}
+.route-mini span i{position:absolute;inset:0 auto 0 0;background:var(--accent)}
+.route-mini span.full i{background:var(--real)}
+@media (max-width:600px){.proj{grid-template-columns:1fr}}
+
+/* Resumen */
+.stage-prog{display:grid;gap:.55rem}
+.stage-prog button{display:grid;grid-template-columns:minmax(140px,220px) 1fr 3.5ch;gap:.8rem;align-items:center;background:none;border:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;padding:.25rem;border-radius:var(--r-s)}
+.stage-prog button:hover{background:var(--surface-2)}
+.stage-prog .pct{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.todo{list-style:none;padding:0;margin:0;display:grid;gap:.45rem}
+.todo li button{display:flex;gap:.6rem;align-items:baseline;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:.6rem .8rem;font:inherit;color:var(--ink);cursor:pointer}
+.todo li button:hover{border-color:var(--primary)}
+.todo .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none;transform:translateY(-1px)}
+
+/* Tabs de fases */
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin:0 0 1.4rem;padding:0;list-style:none}
+.tabs button{display:flex;align-items:center;gap:.5rem;font:inherit;font-weight:700;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:.4em 1em .4em .45em;color:var(--ink);cursor:pointer}
+.tabs button .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font:800 .82rem var(--display)}
+.tabs button.done .n{background:var(--real);color:var(--surface)}
+.tabs button[aria-selected="true"]{border-color:var(--primary);background:var(--primary-soft)}
+
+/* Mapa de empatía */
+.empathy{display:grid;grid-template-columns:1fr 1fr;gap:6px;position:relative}
+.empathy label{background:var(--surface);border:1.5px solid var(--line);padding:.8rem;display:grid;gap:.35rem;font-weight:700}
+.empathy label:nth-child(1){border-radius:var(--r-l) var(--r-s) var(--r-s) var(--r-s)}
+.empathy label:nth-child(2){border-radius:var(--r-s) var(--r-l) var(--r-s) var(--r-s)}
+.empathy label:nth-child(3){border-radius:var(--r-s) var(--r-s) var(--r-s) var(--r-l)}
+.empathy label:nth-child(4){border-radius:var(--r-s) var(--r-s) var(--r-l) var(--r-s)}
+.empathy textarea{border:none;padding:0;min-height:80px;background:transparent;box-shadow:none!important}
+@media (max-width:560px){.empathy{grid-template-columns:1fr}}
+
+/* Tablas */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-l);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.94rem}
+th,td{padding:.6rem .75rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-weight:700;background:var(--surface-2)}
+tr:last-child td{border-bottom:none}
+td select,td input{min-height:36px;padding:.3em .5em}
+td.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
+tr.chosen td{background:var(--real-bg)}
+
+/* Lean Canvas */
+.canvas{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-areas:
+  "pr pr so so pv pv ve ve sg sg"
+  "pr pr me me pv pv ca ca sg sg"
+  "co co co co co in in in in in";gap:6px}
+.cb{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-s);padding:.65rem .7rem;display:flex;flex-direction:column;gap:.3rem;min-height:175px}
+.cb.filled{border-color:color-mix(in srgb,var(--real) 45%,var(--line))}
+.cb header{display:flex;gap:.45rem;align-items:baseline}
+.cb .n{font:800 .8rem var(--display);color:var(--accent-ink);background:var(--accent-soft);border-radius:99px;padding:0 .45em}
+.cb h4{margin:0;font-size:.92rem}
+.cb small{color:var(--muted);font-size:.8rem;line-height:1.35}
+.cb textarea{flex:1;border:none;background:transparent;padding:.2rem 0;min-height:90px;font-size:.92rem;box-shadow:none!important}
+.a-pr{grid-area:pr}.a-so{grid-area:so}.a-me{grid-area:me}.a-pv{grid-area:pv}.a-ve{grid-area:ve}.a-ca{grid-area:ca}.a-sg{grid-area:sg}.a-co{grid-area:co;min-height:130px}.a-in{grid-area:in;min-height:130px}
+@media (max-width:980px){.canvas{grid-template-areas:none;grid-template-columns:1fr 1fr}.cb{grid-area:auto!important}}
+@media (max-width:560px){.canvas{grid-template-columns:1fr}}
+
+/* Planificación */
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem}
+.col{background:var(--surface-2);border-radius:var(--r-l);padding:.8rem;display:grid;gap:.6rem;align-content:start;min-height:140px}
+.col h4{display:flex;justify-content:space-between;margin:0 0 .2rem}
+.task{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:.7rem .8rem;display:grid;gap:.35rem}
+.task b{line-height:1.3}
+.task .meta{font-size:.84rem;color:var(--muted)}
+.task.late{border-color:var(--danger)}
+@media (max-width:800px){.board{grid-template-columns:1fr}}
+
+/* Simulador */
+.sim-frame{border:2px dashed var(--sim);border-radius:var(--r-l);padding:4px;background:repeating-linear-gradient(135deg,var(--sim-bg) 0 10px,transparent 10px 20px)}
+.sim-inner{background:var(--surface);border-radius:calc(var(--r-l) - 4px);padding:1.3rem}
+.sim-banner{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.chars{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.7rem}
+.char{display:grid;gap:.15rem;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);padding:.8rem;font:inherit;color:var(--ink);cursor:pointer}
+.char:hover{border-color:var(--sim)}
+.char[aria-pressed="true"]{border-color:var(--sim);background:var(--sim-bg)}
+.char .avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:800 1rem var(--display);background:var(--sim-bg);color:var(--sim);margin-bottom:.3rem}
+.char small{color:var(--muted)}
+.chat{display:grid;gap:.6rem;margin:1rem 0;max-height:420px;overflow:auto;padding:.3rem}
+.bubble{max-width:78%;padding:.6rem .85rem;border-radius:14px;line-height:1.45}
+.bubble.q{justify-self:end;background:var(--primary-soft);border-bottom-right-radius:4px}
+.bubble.a{justify-self:start;background:var(--sim-bg);border-bottom-left-radius:4px}
+.bubble .who{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-align:left}
+.qopts{display:grid;gap:.45rem}
+.qopts button{text-align:left;font:inherit;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);padding:.55rem .8rem;color:var(--ink);cursor:pointer}
+.qopts button:hover:not([disabled]){border-color:var(--primary)}
+.qopts button[disabled]{opacity:.5;cursor:default}
+.concl{display:grid;gap:.5rem}
+.concl label{display:flex;gap:.6rem;align-items:flex-start;border:1.5px solid var(--line);border-radius:var(--r-m);padding:.7rem .8rem;cursor:pointer;font-weight:400}
+.concl label:has(input:checked){border-color:var(--primary);background:var(--primary-soft)}
+.score{font:800 2.6rem var(--display);line-height:1}
+.fb-list{display:grid;gap:.5rem;margin:.6rem 0 0;padding:0;list-style:none}
+.fb-list li{padding:.55rem .75rem;border-radius:var(--r-m);background:var(--surface-2);font-size:.93rem}
+.fb-list li.good{background:var(--real-bg)}
+.fb-list li.weak{background:var(--accent-soft)}
+
+/* Portafolio */
+.pf-toolbar{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.portfolio{background:#fff;color:#16224A;border:1px solid var(--line);border-radius:var(--r-s);padding:clamp(1.2rem,4vw,3rem);max-width:860px;font-size:.98rem}
+.portfolio h1{font-size:2rem;color:#16224A}
+.portfolio h2{font-size:1.35rem;margin-top:2rem;padding-bottom:.3rem;border-bottom:2px solid #16224A;color:#16224A}
+.portfolio h3{font-size:1.05rem;margin-top:1.2rem;color:#16224A}
+.portfolio .pf-cover{border-bottom:6px solid #F2A516;padding-bottom:1.2rem;margin-bottom:1rem}
+.portfolio .pf-meta{color:#55618A}
+.portfolio .pf-missing{border:1.5px dashed #B53925;color:#B53925;background:#FBE7E2;border-radius:6px;padding:.45rem .7rem;font-size:.9rem;margin:.4rem 0}
+.portfolio .pf-sim{border:1.5px dashed #6A4BC4;background:#F5F1FE;border-radius:6px;padding:.5rem .7rem;font-size:.92rem;margin:.4rem 0}
+.portfolio table{font-size:.88rem}
+.portfolio th{background:#EEF2F9}
+.portfolio th,.portfolio td{border-bottom:1px solid #D2DAEA}
+.portfolio .pf-canvas{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.portfolio .pf-canvas div{border:1px solid #D2DAEA;border-radius:4px;padding:.45rem .55rem;font-size:.86rem;min-height:70px}
+.portfolio .pf-canvas b{display:block;font-size:.8rem}
+.portfolio .pf-disclaimer{margin-top:2rem;font-size:.85rem;color:#55618A;border-top:1px solid #D2DAEA;padding-top:.8rem}
+.portfolio .tag{font-size:.75rem}
+.portfolio .tag.real{background:#DFF3EC;color:#0E8468}
+.portfolio .tag.sim{background:#ECE6FB;color:#6A4BC4;outline-color:#6A4BC4}
+.portfolio .tag.ok{background:#DFF3EC;color:#0E8468}
+.portfolio .tag.bad{background:#FBE7E2;color:#B53925}
+.portfolio .tag.pend{background:#FFF2D3;color:#7A4E00}
+
+/* Docente */
+.review{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:1.5rem;align-items:start}
+.review aside{position:sticky;top:76px;display:grid;gap:1rem}
+@media (max-width:1000px){.review{grid-template-columns:1fr}.review aside{position:static}}
+.rubric{display:grid;gap:.6rem}
+.rubric label{display:grid;grid-template-columns:1fr 120px;gap:.6rem;align-items:center;font-weight:400}
+
+/* Admin */
+.admin-tabs{margin-bottom:1.4rem}
+.admin-tabs button{padding:.45em 1em}
+.audit{list-style:none;padding:0;margin:0}
+.audit li{display:grid;grid-template-columns:160px 1fr;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.93rem}
+@media (max-width:600px){.audit li{grid-template-columns:1fr;gap:.1rem}}
+.chips{display:flex;gap:.45rem;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:.3rem;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:.25em .4em .25em .85em;font-weight:700;font-size:.9rem}
+.chip button{border:none;background:var(--surface-2);color:var(--muted);width:24px;height:24px;border-radius:50%;cursor:pointer;font:inherit;line-height:1}
+.chip.off{opacity:.55;text-decoration:line-through}
+
+/* Login */
+.login{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);flex:1;gap:0}
+.login-hero{padding:clamp(2rem,6vw,5rem);background:var(--primary);color:var(--on-primary);position:relative;overflow:hidden}
+.login-hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.02;max-width:12ch;color:var(--on-primary)}
+.login-hero .lead{color:var(--on-primary);opacity:.85}
+.brandline{display:flex;gap:.6rem;align-items:center;font:700 1rem var(--display);margin-bottom:2.5rem}
+.brandline svg{width:40px;height:40px}
+.route{list-style:none;padding:0;margin:2.5rem 0 0;display:grid;gap:0;max-width:440px}
+.route li{display:grid;grid-template-columns:34px 1fr;gap:.9rem;align-items:center;position:relative;padding:.42rem 0}
+.route li::before{content:"";position:absolute;left:16px;top:50%;bottom:-50%;width:2px;background:color-mix(in srgb,var(--on-primary) 30%,transparent)}
+.route li:last-child::before{display:none}
+.route .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 .9rem var(--display);background:var(--primary);border:2px solid color-mix(in srgb,var(--on-primary) 55%,transparent);position:relative;z-index:1}
+.route li.practice .n{border-style:dashed;border-color:var(--accent);color:var(--accent)}
+.route li:last-child .n{background:var(--accent);border-color:var(--accent);color:#16224A}
+.login-card{padding:clamp(1.5rem,5vw,4rem);display:grid;align-content:center;gap:1.4rem;background:var(--surface)}
+.login-card form{display:grid;gap:.9rem}
+.demo-accts{display:grid;gap:.5rem;border-top:1px solid var(--line);padding-top:1.3rem}
+.demo-accts h3{margin:0}
+.acct{display:flex;justify-content:space-between;align-items:center;gap:1rem;font:inherit;text-align:left;background:var(--surface-2);border:1.5px solid transparent;border-radius:var(--r-m);padding:.75rem 1rem;color:var(--ink);cursor:pointer}
+.acct:hover{border-color:var(--primary)}
+.acct span{color:var(--muted);font-size:.9rem}
+@media (max-width:860px){.login{grid-template-columns:1fr}.route{display:none}.brandline{margin-bottom:1.2rem}}
+
+/* Diálogo y toast */
+dialog{border:none;border-radius:var(--r-l);padding:0;max-width:560px;width:calc(100% - 2rem);background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(10,20,60,.35)}
+dialog::backdrop{background:rgba(14,20,48,.55)}
+dialog form{padding:1.5rem;display:grid;gap:.9rem}
+.toast{position:fixed;left:50%;bottom:calc(1.2rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:.7rem 1.1rem;border-radius:var(--r-m);font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;max-width:min(92vw,520px);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--danger);color:#fff}
+details summary{cursor:pointer;font-weight:700}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Impresión del portafolio */
+@media print{
+  body{background:#fff}
+  .no-print,.topbar,.rail,.toast,.pf-toolbar,.sec-head,dialog{display:none!important}
+  .shell,.review{display:block}
+  .content,.page{padding:0;max-width:none}
+  .portfolio{border:none;padding:0;max-width:none}
+  .portfolio h2{break-after:avoid}
+  .portfolio table,.portfolio .pf-canvas{break-inside:avoid}
+  :root{padding:0}
+}
+</style>
+</head>
+<body>
+<div id="app" style="min-height:100%;display:flex;flex-direction:column"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   Laboratorio Virtual de Emprendimiento · Demo de frontend
+   ---------------------------------------------------------------------
+   Estructura pensada para migrar a producción:
+   - Store: hoy usa localStorage del navegador. En producción se reemplaza
+     por llamadas HTTP al backend (ver comentarios "API:" en cada método).
+   - Las vistas son funciones puras (datos -> HTML). Se pueden portar a
+     componentes React/Vue uno a uno.
+   - La autorización real debe hacerse en el servidor (RN-008, HU-013 #5);
+     aquí solo se simula en el cliente.
+   ===================================================================== */
+
+/* ---------- Utilidades ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = p => p + '_' + Math.random().toString(36).slice(2, 9);
+const today = () => new Date().toISOString().slice(0, 10);
+const nowISO = () => new Date().toISOString();
+const fmtDate = d => { if (!d) return '—'; const x = new Date(d.length === 10 ? d + 'T12:00' : d); return x.toLocaleDateString('es-PE', {day:'numeric', month:'short', year:'numeric'}); };
+const fmtTime = d => new Date(d).toLocaleTimeString('es-PE', {hour:'2-digit', minute:'2-digit'});
+const first = n => String(n).split(' ')[0];
+const initials = n => String(n).split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+const avg = arr => arr.length ? arr.reduce((a, b) => a + (b === true ? 1 : b === false ? 0 : b), 0) / arr.length : 0;
+const filled = v => !!String(v ?? '').trim();
+const pct = v => Math.round(v * 100);
+const getPath = (o, path) => path.split('.').reduce((a, k) => a == null ? a : a[k], o);
+const setPath = (o, path, val) => { const ks = path.split('.'); let cur = o; ks.slice(0, -1).forEach(k => { if (cur[k] == null || typeof cur[k] !== 'object') cur[k] = {}; cur = cur[k]; }); cur[ks[ks.length - 1]] = val; };
+const opts = (list, sel) => list.map(o => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}"${String(v) === String(sel) ? ' selected' : ''}>${esc(l)}</option>`; }).join('');
+
+const LOGO = `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#F2A516"/><path d="M15 9h10M17 9v8.5L10.8 28a3 3 0 0 0 2.6 4.5h13.2a3 3 0 0 0 2.6-4.5L23 17.5V9" fill="none" stroke="#16224A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.2 25h13.6" stroke="#16224A" stroke-width="2.4" stroke-linecap="round"/><circle cx="18" cy="28.5" r="1.4" fill="#16224A"/><circle cx="22.5" cy="27.8" r="1" fill="#16224A"/></svg>`;
+
+const ROLE_LABEL = {estudiante:'Estudiante', docente:'Docente', admin:'Administración'};
+
+/* ---------- Estructura educativa (configurable, RN-010) ---------- */
+const STAGES = [
+  {id:'resumen', label:'Resumen'},
+  {id:'preparacion', n:1, label:'Preparación'},
+  {id:'dt', n:2, label:'Design Thinking'},
+  {id:'simulador', label:'Simulador', practice:true},
+  {id:'canvas', n:3, label:'Lean Canvas'},
+  {id:'plan', n:4, label:'Planificación'},
+  {id:'validacion', n:5, label:'Ejecución y validación'},
+  {id:'evidencias', n:6, label:'Evidencias'},
+  {id:'portafolio', n:7, label:'Portafolio'}
+];
+const DT = [
+  {id:'empatizar', n:1, label:'Empatizar', intro:'Conoce a las personas que viven el problema. Entrevista, observa y anota lo que dicen, hacen y sienten.'},
+  {id:'definir', n:2, label:'Definir', intro:'Ordena tus hallazgos y escribe el problema desde el punto de vista del usuario.'},
+  {id:'idear', n:3, label:'Idear', intro:'Propón varias soluciones, compáralas con criterios claros y elige una con argumentos.'},
+  {id:'prototipar', n:4, label:'Prototipar', intro:'Describe y construye una versión sencilla de tu solución para poder probarla.'},
+  {id:'evaluar', n:5, label:'Evaluar', intro:'Prueba el prototipo con usuarios, recoge sus comentarios y decide qué mejorar.'}
+];
+const CANVAS = [
+  {key:'problema', n:1, label:'Problema', hint:'Los 1 a 3 problemas más importantes de tu cliente.', a:'pr'},
+  {key:'segmentos', n:2, label:'Segmentos de clientes', hint:'¿Para quién es? ¿Quiénes lo usarían primero?', a:'sg'},
+  {key:'puv', n:3, label:'Propuesta de valor única', hint:'Un mensaje claro de por qué tu propuesta es diferente.', a:'pv'},
+  {key:'solucion', n:4, label:'Solución', hint:'Las características que resuelven cada problema.', a:'so'},
+  {key:'canales', n:5, label:'Canales', hint:'Cómo llegas a tus clientes.', a:'ca'},
+  {key:'ingresos', n:6, label:'Fuentes de ingresos', hint:'Cómo y cuánto pagarán tus clientes.', a:'in'},
+  {key:'costos', n:7, label:'Estructura de costos', hint:'Costos fijos y variables para operar.', a:'co'},
+  {key:'metricas', n:8, label:'Métricas clave', hint:'Los números que muestran si avanzas.', a:'me'},
+  {key:'ventaja', n:9, label:'Ventaja especial', hint:'Algo que sea difícil de copiar o comprar.', a:'ve'}
+];
+const STATUS = {pendiente:'Pendiente', progreso:'En progreso', completada:'Completada'};
+const HYP = {pendiente:'Pendiente', validada:'Validada', refutada:'Refutada'};
+
+/* ---------- Escenario de simulación (HU-006) ---------- */
+const SCENARIOS = [{
+  id:'s1',
+  title:'La cosecha que no llega al mercado',
+  category:'Agricultura',
+  context:'En el valle de Santa Rosa, pequeños productores de papa y haba tienen dificultades para vender su cosecha en la ciudad. Antes de proponer una solución, necesitas entender cuál es el problema de fondo. Puedes hacer hasta 5 preguntas en total.',
+  maxQ:5,
+  chars:[
+    {id:'prod', name:'Don Teodoro', role:'Productor de papa y haba', qs:[
+      {q:'¿Cómo llevas tus productos hasta donde los vendes?', a:'Los junto en costales y espero el camión de los jueves. Si no pasa, se me malogra parte de la cosecha.', pts:3, kind:'abierta', fb:'Pregunta abierta sobre su experiencia real. Te da hechos concretos.'},
+      {q:'¿Qué es lo más difícil de vender tu cosecha?', a:'No saber a cuánto se paga en la ciudad. El intermediario pone el precio y yo acepto, porque no tengo cómo llevarlo yo mismo.', pts:3, kind:'abierta', fb:'Buena pregunta: deja que el usuario elija qué es importante para él.'},
+      {q:'¿Te gustaría vender tus productos por una aplicación?', a:'Sí, supongo… aunque aquí la señal del celular es mala.', pts:0, kind:'sesgada', fb:'Preguntas por tu solución, no por su problema. Las personas suelen responder «sí» por cortesía.'},
+      {q:'¿Cuánto de tu cosecha se pierde en una temporada?', a:'En temporada alta, quizás uno de cada cinco costales.', pts:2, kind:'específica', fb:'Pregunta específica útil para dimensionar el problema.'}
+    ]},
+    {id:'com', name:'Rosa', role:'Comerciante del mercado distrital', qs:[
+      {q:'¿De dónde compras las verduras que vendes?', a:'Del mercado mayorista de la ciudad. Aunque parezca raro, me sale más fácil: los productores de aquí no tienen cantidades ni días fijos.', pts:3, kind:'abierta', fb:'Excelente: revela un dato inesperado sobre la coordinación.'},
+      {q:'Si pudieras comprar directo a los productores, ¿lo harías?', a:'Me gustaría, pero necesito saber qué día llega y cuánto me van a traer.', pts:1, kind:'hipotética', fb:'Pregunta hipotética: aporta algo, pero las personas predicen mal lo que harán en el futuro.'},
+      {q:'¿Verdad que los productores cobran muy caro?', a:'No, la verdad no es eso…', pts:0, kind:'sesgada', fb:'Pregunta que sugiere la respuesta. Evita incluir tu opinión en la pregunta.'}
+    ]},
+    {id:'tra', name:'Julio', role:'Transportista de la ruta', qs:[
+      {q:'¿Cómo decides qué días haces la ruta al valle?', a:'Cuando junto carga suficiente para que me salga a cuenta. Si son pocos costales, no conviene subir.', pts:3, kind:'abierta', fb:'Muy buena: explica por qué el transporte no es regular.'},
+      {q:'¿Qué problemas encuentras en la ruta?', a:'La trocha en época de lluvias. Y que cada productor me llama por separado; no hay un punto donde juntar la carga.', pts:2, kind:'abierta', fb:'Abierta y útil: aparece la idea de un punto de acopio.'},
+      {q:'¿Cobras caro por el flete?', a:'Cobro lo justo para la gasolina y el tiempo.', pts:0, kind:'cerrada', fb:'Pregunta cerrada y algo acusatoria. Da poca información.'}
+    ]}
+  ],
+  conclusions:[
+    {text:'Los productores necesitan una aplicación para vender sus productos.', pts:0, fb:'Saltaste a una solución. Además, Don Teodoro mencionó que la señal es mala.'},
+    {text:'El problema central es la falta de coordinación de la carga: sin días fijos ni punto de acopio, el transporte no es rentable y parte de la cosecha se pierde.', pts:5, fb:'Correcto. Varias fuentes coinciden: el productor, la comerciante y el transportista.'},
+    {text:'Los comerciantes no quieren comprar productos locales.', pts:0, fb:'Rosa dijo lo contrario: compraría si supiera qué día llega y cuánto.'},
+    {text:'El precio del flete es el problema principal.', pts:2, fb:'En parte. El flete existe, pero el transportista explica que el costo depende de juntar suficiente carga.'}
+  ]
+}];
+
+/* ---------- Datos iniciales de la demo ---------- */
+function seed(){
+  const d = n => { const x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); };
+  const t = n => { const x = new Date(); x.setDate(x.getDate() + n); return x.toISOString(); };
+  const crit = [{id:'c1', name:'Viabilidad'}, {id:'c2', name:'Impacto'}, {id:'c3', name:'Costo bajo'}, {id:'c4', name:'Originalidad'}];
+  return {
+    schema:1,
+    users:[
+      {id:'u1', name:'Lucía Ramos', email:'lucia.ramos@colegio.edu.pe', role:'estudiante', active:true},
+      {id:'u2', name:'Diego Mamani', email:'diego.mamani@colegio.edu.pe', role:'estudiante', active:true},
+      {id:'u5', name:'Camila Torres', email:'camila.torres@colegio.edu.pe', role:'estudiante', active:true},
+      {id:'u3', name:'Andrés Quispe', email:'andres.quispe@colegio.edu.pe', role:'docente', active:true},
+      {id:'u4', name:'Coordinación TIC', email:'tic@colegio.edu.pe', role:'admin', active:true}
+    ],
+    categories:[
+      {id:'k1', name:'Agricultura', active:true}, {id:'k2', name:'Mecánica', active:true}, {id:'k3', name:'Tecnología', active:true},
+      {id:'k4', name:'Servicios', active:true}, {id:'k5', name:'Comercio', active:true}, {id:'k6', name:'Alimentación', active:true},
+      {id:'k7', name:'Medioambiente', active:true}, {id:'k8', name:'Arte y cultura', active:true}
+    ],
+    config:{maxMB:10, types:'jpg, jpeg, png, pdf, docx, mp4'},
+    checklist:[
+      {id:'ev1', name:'Registro de entrevista u observación con usuarios', stage:'dt'},
+      {id:'ev2', name:'Fotografía o archivo del prototipo', stage:'dt'},
+      {id:'ev3', name:'Cronograma o plan de trabajo', stage:'plan'},
+      {id:'ev4', name:'Registro de prueba con usuarios', stage:'validacion'},
+      {id:'ev5', name:'Sustento de costos (boletas, cotizaciones)', stage:'validacion'}
+    ],
+    rubric:[
+      {id:'r1', name:'Comprensión del usuario y del problema'},
+      {id:'r2', name:'Coherencia entre problema y solución'},
+      {id:'r3', name:'Modelo de negocio (Lean Canvas)'},
+      {id:'r4', name:'Validación con evidencias reales'},
+      {id:'r5', name:'Organización y trabajo en equipo'}
+    ],
+    scenarios:[{id:'s1', active:true}],
+    audit:[
+      {id:uid('a'), date:t(-12), by:'Coordinación TIC', action:'Creó la cuenta de Andrés Quispe con rol Docente'},
+      {id:uid('a'), date:t(-11), by:'Coordinación TIC', action:'Asignó al docente Andrés Quispe los proyectos «Ruta Fresca» y «EcoBolsa Andina»'},
+      {id:uid('a'), date:t(-9), by:'Coordinación TIC', action:'Activó el escenario «La cosecha que no llega al mercado»'}
+    ],
+    projects:[
+      {
+        id:'p1', name:'Ruta Fresca', category:'Agricultura',
+        description:'Un servicio que organiza la carga de pequeños productores del valle para que el transporte a la ciudad sea regular y la cosecha no se pierda.',
+        owner:'u1', members:['u1', 'u2'], teacherId:'u3', createdAt:t(-21), updatedAt:t(-1),
+        team:[
+          {id:'m1', name:'Lucía Ramos', role:'Coordinadora', resp:'Entrevistas y registro de hallazgos'},
+          {id:'m2', name:'Diego Mamani', role:'Prototipo y logística', resp:'Diseño del punto de acopio'},
+          {id:'m3', name:'Valeria Cruz', role:'Finanzas', resp:'Costos y precios'}
+        ],
+        objectives:[
+          {id:'o1', text:'Reducir la pérdida de cosecha de los productores del valle.'},
+          {id:'o2', text:'Probar un punto de acopio semanal con al menos 5 productores.'}
+        ],
+        prep:{start:'Varios productores de la zona alta pierden parte de su cosecha porque el transporte a la ciudad no llega con regularidad.'},
+        dt:{
+          empatizar:{
+            records:[
+              {id:'e1', date:d(-18), type:'Entrevista', origin:'real', person:'Productor de haba, 52 años', findings:'Espera el camión de los jueves. Si no pasa, pierde parte de la cosecha. No conoce el precio en la ciudad.', author:'Lucía Ramos'},
+              {id:'e2', date:d(-16), type:'Observación', origin:'real', person:'Feria dominical del distrito', findings:'Pocos productores locales venden directamente; la mayoría de verduras viene del mayorista.', author:'Diego Mamani'},
+              {id:'e3', date:d(-14), type:'Entrevista', origin:'simulada', person:'Perfiles simulados: productor, comerciante', findings:'Práctica en el simulador: la comerciante compraría local si hubiera días y cantidades fijas.', author:'Lucía Ramos'}
+            ],
+            profile:'Productor de 40 a 60 años, con una parcela pequeña. Usa un celular básico y vende a intermediarios.',
+            map:{dice:'«Si el camión no pasa, se me malogra la haba.»', piensa:'', hace:'Junta la cosecha en costales y espera el camión de los jueves.', siente:'Inseguridad sobre el precio que le pagarán.'}
+          },
+          definir:{
+            problem:'La cosecha de los pequeños productores se pierde porque el transporte no es regular.',
+            needs:'Saber qué día se recoge la carga. Conocer el precio de referencia.',
+            pov:'Los productores del valle necesitan una forma segura de que su cosecha llegue a la ciudad cada semana, porque hoy dependen de que el camión decida subir.',
+            hmw:'¿Cómo podríamos coordinar la carga de varios productores para que el transporte salga a cuenta todas las semanas?'
+          },
+          definirVersions:[],
+          idear:{
+            criteria:crit,
+            ideas:[
+              {id:'i1', title:'Aplicación para vender en línea', desc:'Los productores publican su cosecha en una app.', scores:{c1:2, c2:3, c3:2, c4:3}, discarded:false},
+              {id:'i2', title:'Punto de acopio con día fijo', desc:'Un local donde se junta la carga los miércoles y se avisa por mensaje de texto.', scores:{c1:4, c2:5, c3:4, c4:3}, discarded:false},
+              {id:'i3', title:'Camión comunitario', desc:'Comprar un vehículo entre todos los productores.', scores:{c1:1, c2:4, c3:1, c4:2}, discarded:false},
+              {id:'i4', title:'Feria semanal en el pueblo', desc:'Atraer compradores de la ciudad al valle.', scores:{c1:3, c2:3, c3:3, c4:2}, discarded:false}
+            ],
+            chosen:'i2',
+            justification:'Es la que mejor resuelve la coordinación, cuesta poco empezar y no depende de la señal de internet.'
+          },
+          prototipar:{versions:[
+            {id:'v1', v:1, desc:'Maqueta del punto de acopio y tarjeta de registro de costales por productor.', materials:'Cartón, balanza prestada, tarjetas impresas', specs:'Capacidad estimada: 40 costales', status:'planificado', changes:''}
+          ]},
+          evaluar:{tests:[]}
+        },
+        canvas:{
+          problema:'1. La cosecha se pierde porque el transporte no es regular.\n2. El productor no conoce el precio de referencia.',
+          segmentos:'Pequeños productores del valle de Santa Rosa. Comerciantes del mercado distrital.',
+          puv:'Tu cosecha sale cada miércoles, sin esperar al camión.',
+          solucion:'Punto de acopio con día fijo. Aviso por mensaje de texto. Registro de costales.',
+          canales:'', ingresos:'', costos:'', metricas:'', ventaja:''
+        },
+        canvasVersions:[],
+        hypotheses:[
+          {id:'h1', block:'solucion', text:'Al menos 5 productores llevarán su carga al punto de acopio el día fijo.', method:'Piloto de 2 semanas con registro de costales', status:'pendiente', result:''},
+          {id:'h2', block:'segmentos', text:'Los comerciantes del mercado comprarán si conocen el día de llegada.', method:'Entrevistas a 6 comerciantes', status:'pendiente', result:''}
+        ],
+        activities:[
+          {id:'a1', title:'Entrevistar a 5 productores', resp:'Lucía Ramos', start:d(-20), end:d(-15), status:'completada'},
+          {id:'a2', title:'Construir maqueta del punto de acopio', resp:'Diego Mamani', start:d(-6), end:d(2), status:'progreso'},
+          {id:'a3', title:'Cotizar alquiler del local', resp:'Valeria Cruz', start:d(-3), end:d(4), status:'pendiente'},
+          {id:'a4', title:'Primera semana de piloto', resp:'Lucía Ramos', start:d(7), end:d(14), status:'pendiente'}
+        ],
+        risks:[{id:'rk1', text:'Lluvias que bloqueen la trocha durante el piloto.', plan:'Coordinar fechas alternativas con el transportista.'}],
+        validations:[],
+        evidences:[
+          {id:'f1', title:'Notas de entrevista a productor', desc:'Fotografía del cuaderno de campo.', stage:'dt', req:'ev1', kind:'real', fileName:'entrevista-productor.jpg', size:1840000, date:t(-18), author:'Lucía Ramos'},
+          {id:'f2', title:'Boceto del punto de acopio', desc:'Primer dibujo a mano.', stage:'dt', req:'', kind:'practica', fileName:'boceto-acopio.png', size:920000, date:t(-8), author:'Diego Mamani'}
+        ],
+        simulations:[
+          {id:'sm1', scenarioId:'s1', title:'La cosecha que no llega al mercado', date:t(-14), score:15, max:21, conclusion:'Falta de coordinación de la carga', correct:true, reflection:'Aprendí a no preguntar por mi solución directamente.'}
+        ],
+        comments:[
+          {id:'cm1', by:'u3', byName:'Andrés Quispe', stage:'dt', text:'Buen trabajo en Empatizar. Para Definir, relacionen el POV con al menos dos hallazgos reales.', date:t(-10)}
+        ],
+        evaluations:[]
+      },
+      {
+        id:'p2', name:'EcoBolsa Andina', category:'Medioambiente',
+        description:'Bolsas reutilizables hechas con retazos textiles de talleres de costura del barrio.',
+        owner:'u5', members:['u5'], teacherId:'u3', createdAt:t(-15), updatedAt:t(-4),
+        team:[{id:'m9', name:'Camila Torres', role:'Responsable', resp:'Todo el proyecto'}],
+        objectives:[], prep:{start:''},
+        dt:{empatizar:{records:[], profile:'', map:{dice:'', piensa:'', hace:'', siente:''}}, definir:{problem:'', needs:'', pov:'', hmw:''}, definirVersions:[], idear:{criteria:crit.map(c => ({...c})), ideas:[], chosen:'', justification:''}, prototipar:{versions:[]}, evaluar:{tests:[]}},
+        canvas:{problema:'Muchas bolsas plásticas en el mercado del barrio.', segmentos:'', puv:'', solucion:'', canales:'', ingresos:'', costos:'', metricas:'', ventaja:''},
+        canvasVersions:[], hypotheses:[], activities:[], risks:[], validations:[], evidences:[], simulations:[], comments:[], evaluations:[]
+      }
+    ]
+  };
+}
+
+function blankProject(data, user){
+  const crit = [{id:uid('c'), name:'Viabilidad'}, {id:uid('c'), name:'Impacto'}, {id:uid('c'), name:'Costo bajo'}, {id:uid('c'), name:'Originalidad'}];
+  return {
+    id:uid('p'), name:data.name, category:data.category, description:data.description || '',
+    owner:user.id, members:[user.id], teacherId:'u3', createdAt:nowISO(), updatedAt:nowISO(),
+    team:[{id:uid('m'), name:user.name, role:'Responsable', resp:''}], objectives:[], prep:{start:''},
+    dt:{empatizar:{records:[], profile:'', map:{dice:'', piensa:'', hace:'', siente:''}}, definir:{problem:'', needs:'', pov:'', hmw:''}, definirVersions:[], idear:{criteria:crit, ideas:[], chosen:'', justification:''}, prototipar:{versions:[]}, evaluar:{tests:[]}},
+    canvas:Object.fromEntries(CANVAS.map(b => [b.key, ''])), canvasVersions:[], hypotheses:[], activities:[], risks:[], validations:[], evidences:[], simulations:[], comments:[], evaluations:[]
+  };
+}
+
+/* ---------- Persistencia (reemplazar por API REST en producción) ---------- */
+const Store = {
+  key:'lve-demo-v1', data:null,
+  load(){ try { const raw = localStorage.getItem(this.key); this.data = raw ? JSON.parse(raw) : seed(); } catch (e) { this.data = seed(); } },
+  save(){ try { localStorage.setItem(this.key, JSON.stringify(this.data)); return true; } catch (e) { return false; } },
+  reset(){ this.data = seed(); this.save(); }
+};
+const Session = {
+  get(){ try { return localStorage.getItem('lve-session'); } catch (e) { return null; } },
+  set(id){ try { id ? localStorage.setItem('lve-session', id) : localStorage.removeItem('lve-session'); } catch (e) {} }
+};
+
+const API = {
+  // API: GET /api/projects  (el servidor filtra según rol y asignación)
+  projectsFor(u){
+    const ps = Store.data.projects;
+    if (u.role === 'estudiante') return ps.filter(p => p.members.includes(u.id));
+    if (u.role === 'docente') return ps.filter(p => p.teacherId === u.id);
+    return ps;
+  },
+  // API: GET /api/projects/:id  -> 403 si no está autorizado
+  get(id){ const u = me(); return this.projectsFor(u).find(p => p.id === id) || null; },
+  // API: POST /api/projects
+  create(data){ const p = blankProject(data, me()); Store.data.projects.push(p); Store.save(); return p; },
+  // API: PATCH /api/projects/:id   (en producción: un endpoint por recurso)
+  touch(p){ p.updatedAt = nowISO(); const ok = Store.save(); S.lastSave = ok ? nowISO() : 'error'; showSave(); refreshRail(); return ok; },
+  // API: POST /api/admin/audit (se registra en el servidor, no en el cliente)
+  audit(action){ Store.data.audit.unshift({id:uid('a'), date:nowISO(), by:me().name, action}); Store.save(); }
+};
+
+/* ---------- Estado de la interfaz ---------- */
+const S = {userId:null, projectId:null, section:'resumen', dtTab:'empatizar', sim:null, adminTab:'usuarios', reviewId:null, prefill:null, lastSave:null};
+const me = () => Store.data.users.find(u => u.id === S.userId);
+const cur = () => S.projectId ? API.get(S.projectId) : null;
+const userName = id => (Store.data.users.find(u => u.id === id) || {}).name || '—';
+
+/* ---------- Progreso calculado a partir de datos (RN-006) ---------- */
+function dtProgress(p){
+  const e = p.dt.empatizar, df = p.dt.definir, i = p.dt.idear, pr = p.dt.prototipar, ev = p.dt.evaluar;
+  const phases = {
+    empatizar: avg([e.records.some(r => r.origin === 'real'), Object.values(e.map).filter(filled).length >= 3, filled(e.profile)]),
+    definir: avg([filled(df.problem), filled(df.pov), filled(df.hmw)]),
+    idear: avg([Math.min(i.ideas.length / 4, 1), !!i.chosen, filled(i.justification)]),
+    prototipar: avg([pr.versions.length > 0, pr.versions.some(v => v.status === 'construido')]),
+    evaluar: avg([ev.tests.length > 0, ev.tests.some(x => filled(x.improvements))])
+  };
+  return {phases, total:avg(Object.values(phases))};
+}
+function progress(p){
+  const blocks = CANVAS.filter(b => filled(p.canvas[b.key])).length / CANVAS.length;
+  const cl = Store.data.checklist;
+  const covered = cl.filter(c => p.evidences.some(e => e.req === c.id && e.kind === 'real')).length;
+  const r = {
+    preparacion: avg([p.team.length > 0, p.team.some(m => filled(m.resp)), p.objectives.length > 0, filled(p.prep.start)]),
+    dt: dtProgress(p).total,
+    simulador: p.simulations.length ? 1 : 0,
+    canvas: blocks * .8 + (p.hypotheses.length ? .2 : 0),
+    plan: avg([p.activities.length > 0, p.activities.length >= 3, p.activities.some(a => a.status === 'completada')]),
+    validacion: avg([p.validations.length > 0, p.validations.some(v => v.hypothesisId), p.validations.some(v => filled(v.learnings))]),
+    evidencias: cl.length ? covered / cl.length : 1
+  };
+  r.portafolio = avg([r.preparacion, r.dt, r.canvas, r.plan, r.validacion, r.evidencias]);
+  r.resumen = r.portafolio;
+  return r;
+}
+function pending(p){
+  const t = [], dt = p.dt;
+  if (!p.objectives.length) t.push(['preparacion', 'Define al menos un objetivo del proyecto.']);
+  if (!p.team.some(m => filled(m.resp))) t.push(['preparacion', 'Asigna responsabilidades al equipo.']);
+  if (!dt.empatizar.records.some(r => r.origin === 'real')) t.push(['dt', 'Registra una entrevista u observación real. Las simuladas no cuentan como evidencia.']);
+  if (!filled(dt.definir.pov)) t.push(['dt', 'Escribe el punto de vista del usuario (POV).']);
+  if (dt.idear.ideas.length < 4) t.push(['dt', `Propón ${4 - dt.idear.ideas.length} alternativa(s) más de solución.`]);
+  if (!dt.idear.chosen) t.push(['dt', 'Elige una alternativa y justifica tu elección.']);
+  if (!dt.prototipar.versions.some(v => v.status === 'construido')) t.push(['dt', 'Construye tu prototipo y regístralo como construido.']);
+  if (!dt.evaluar.tests.length) t.push(['dt', 'Registra una prueba de tu prototipo.']);
+  const empty = CANVAS.filter(b => !filled(p.canvas[b.key])).length;
+  if (empty) t.push(['canvas', `Completa ${empty} bloque(s) del Lean Canvas.`]);
+  if (!p.hypotheses.length) t.push(['canvas', 'Formula una hipótesis para validar.']);
+  if (!p.activities.length) t.push(['plan', 'Planifica las actividades del proyecto.']);
+  if (!p.validations.length) t.push(['validacion', 'Registra una prueba con usuarios reales.']);
+  const miss = Store.data.checklist.filter(c => !p.evidences.some(e => e.req === c.id && e.kind === 'real')).length;
+  if (miss) t.push(['evidencias', `Faltan ${miss} evidencia(s) de la lista de comprobación.`]);
+  return t;
+}
+const bar = v => `<div class="bar${v >= 1 ? ' full' : ''}" role="progressbar" aria-valuenow="${pct(v)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct(v)}%"></i></div>`;
+
+/* ---------- Render principal ---------- */
+function render(keepScroll){
+  const y = window.scrollY;
+  const app = $('#app');
+  if (!S.userId || !me()) { app.innerHTML = loginView(); return; }
+  const u = me();
+  let body;
+  if (u.role === 'estudiante') body = (S.projectId && cur()) ? projectView() : homeView();
+  else if (u.role === 'docente') body = teacherView();
+  else body = adminView();
+  app.innerHTML = topbar() + body;
+  showSave();
+  if (keepScroll) window.scrollTo(0, y); else window.scrollTo(0, 0);
+}
+const rerender = () => render(true);
+
+function topbar(){
+  const u = me(), p = u.role === 'estudiante' ? cur() : null;
+  return `<header class="topbar no-print">
+    <button class="brand" data-action="home" aria-label="Ir al inicio">${LOGO}<span>Laboratorio de Emprendimiento</span></button>
+    <div class="tb-mid">${p ? `<span class="tb-project">${esc(p.name)}</span>` : ''}<span id="savestate" class="savestate" aria-live="polite"></span></div>
+    <div class="tb-user">
+      <span class="who"><b>${esc(u.name)}</b><small>${ROLE_LABEL[u.role]}</small></span>
+      <button class="btn sm ghost" data-action="theme" aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">◐</button>
+      <button class="btn sm" data-action="logout">Cerrar sesión</button>
+    </div></header>`;
+}
+function showSave(){
+  const el = $('#savestate'); if (!el || !S.lastSave) return;
+  if (S.lastSave === 'error') { el.textContent = 'No se pudo guardar. Revisa tu conexión.'; el.className = 'savestate err'; }
+  else { el.textContent = 'Guardado a las ' + fmtTime(S.lastSave); el.className = 'savestate'; }
+}
+
+/* ---------- Ingreso (HU-002) ---------- */
+function loginView(){
+  const route = ['Prepara a tu equipo', 'Entiende al usuario con Design Thinking', 'Practica en el simulador', 'Arma tu Lean Canvas', 'Planifica y valida tu propuesta', 'Reúne tus evidencias', 'Genera tu portafolio'];
+  const accts = ['u1', 'u3', 'u4'].map(id => Store.data.users.find(u => u.id === id)).filter(u => u && u.active);
+  let n = 0;
+  return `<main class="login">
+    <section class="login-hero">
+      <div class="brandline">${LOGO}<span>Crea y Emprende</span></div>
+      <h1>Laboratorio Virtual de Emprendimiento</h1>
+      <p class="lead">Lleva tu idea desde la primera entrevista hasta el portafolio, con cada avance guardado en el camino.</p>
+      <ol class="route" aria-label="Etapas del proyecto">${route.map((r, i) => i === 2 ? `<li class="practice"><span class="n" aria-hidden="true">P</span><span>${r}</span></li>` : `<li><span class="n">${++n}</span><span>${r}</span></li>`).join('')}</ol>
+    </section>
+    <section class="login-card">
+      <div><h2>Ingresar</h2><p class="muted">Usa el correo con el que te registró tu institución.</p></div>
+      <form data-form="login" novalidate>
+        <label class="field">Correo<input name="email" type="email" autocomplete="username" placeholder="nombre@colegio.edu.pe"></label>
+        <label class="field">Contraseña<input name="password" type="password" autocomplete="current-password"></label>
+        <button class="btn primary block" type="submit">Ingresar</button>
+        <button type="button" class="linkbtn" data-action="forgot">Olvidé mi contraseña</button>
+      </form>
+      <div class="demo-accts">
+        <h3>Cuentas de demostración</h3>
+        <p class="muted small">En esta demo no se verifican contraseñas. Elige un rol para explorar la plataforma.</p>
+        ${accts.map(u => `<button class="acct" data-action="loginAs" data-id="${u.id}"><b>${esc(u.name)}</b><span>${ROLE_LABEL[u.role]}</span></button>`).join('')}
+        <button class="linkbtn small" data-action="resetDemo">Restablecer los datos de la demo</button>
+      </div>
+    </section></main>`;
+}
+
+/* ---------- Inicio del estudiante (HU-003) ---------- */
+function homeView(){
+  const list = API.projectsFor(me()).slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const cats = Store.data.categories.filter(c => c.active).map(c => c.name);
+  return `<main class="page">
+    <div class="page-head">
+      <div><h1>Hola, ${esc(first(me().name))}</h1><p class="lead">Continúa un proyecto o empieza uno nuevo.</p></div>
+      <button class="btn primary" data-action="openNew">Crear proyecto</button>
+    </div>
+    ${list.length ? `<div class="proj-list">${list.map(projRow).join('')}</div>`
+      : `<div class="empty"><h3>Aún no tienes proyectos</h3><p>Crea tu primer proyecto para empezar con la etapa de Preparación.</p><button class="btn primary" data-action="openNew">Crear proyecto</button></div>`}
+    </main>
+    <dialog id="dlgNew" aria-labelledby="dlgNewTitle">
+      <form data-form="newProject">
+        <h2 id="dlgNewTitle">Nuevo proyecto</h2>
+        <label class="field">Nombre del proyecto<input name="name" required maxlength="80" placeholder="Por ejemplo: Ruta Fresca"></label>
+        <label class="field">Categoría<select name="category" required>${opts(cats)}</select><small>Elige la que mejor describa tu proyecto. Podrás cambiarla después.</small></label>
+        <label class="field">Descripción breve<textarea name="description" maxlength="400" placeholder="¿Qué problema quieres resolver y para quién?"></textarea></label>
+        <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-action="closeNew">Cancelar</button><button class="btn primary" type="submit">Crear proyecto</button></div>
+      </form>
+    </dialog>`;
+}
+function projRow(p){
+  const pr = progress(p);
+  const seg = ['preparacion', 'dt', 'canvas', 'plan', 'validacion', 'evidencias', 'portafolio'];
+  return `<article class="proj">
+    <div>
+      <div class="row" style="gap:.5rem;margin-bottom:.35rem"><span class="tag plan">${esc(p.category)}</span><span class="muted small">Actualizado el ${fmtDate(p.updatedAt)}</span></div>
+      <h3>${esc(p.name)}</h3>
+      <p class="muted" style="margin:0;max-width:70ch">${esc(p.description) || 'Sin descripción todavía.'}</p>
+      <div class="route-mini" aria-label="Avance por etapa: ${pct(pr.portafolio)}% en total">${seg.map(s => `<span class="${pr[s] >= 1 ? 'full' : ''}" title="${STAGES.find(x => x.id === s).label}: ${pct(pr[s])}%"><i style="width:${pct(pr[s])}%"></i></span>`).join('')}</div>
+    </div>
+    <button class="btn primary" data-action="openProject" data-id="${p.id}">Continuar</button>
+  </article>`;
+}
+
+/* ---------- Vista del proyecto ---------- */
+function projectView(){
+  const p = cur();
+  return `<div class="shell"><nav class="rail no-print" id="rail" aria-label="Etapas del proyecto">${railHTML(p)}</nav><main class="content" id="main">${sectionHTML(p)}</main></div>`;
+}
+function railHTML(p){
+  const pr = progress(p);
+  return `<button class="linkbtn rail-back" data-action="home">Mis proyectos</button>
+  <ol>${STAGES.map(s => {
+    const v = pr[s.id] ?? 0;
+    const numTxt = s.n ? s.n : s.practice ? 'P' : '•';
+    return `<li><button class="stage${v >= 1 && s.n ? ' done' : ''}${s.practice ? ' practice' : ''}" data-action="go" data-sec="${s.id}"${S.section === s.id ? ' aria-current="page"' : ''}>
+      <span class="num" aria-hidden="true">${v >= 1 && s.n ? '✓' : numTxt}</span><span class="lbl">${s.label}</span>${s.id === 'resumen' || s.practice ? '<span></span>' : bar(v)}</button></li>`;
+  }).join('')}</ol>
+  <p class="rail-note">Demo: los datos se guardan en este navegador. En producción se guardan en el servidor.</p>`;
+}
+function refreshRail(){ const r = $('#rail'), p = cur(); if (r && p) r.innerHTML = railHTML(p); }
+
+function sectionHTML(p){
+  switch (S.section) {
+    case 'preparacion': return secPrep(p);
+    case 'dt': return secDT(p);
+    case 'simulador': return secSim(p);
+    case 'canvas': return secCanvas(p);
+    case 'plan': return secPlan(p);
+    case 'validacion': return secVal(p);
+    case 'evidencias': return secEv(p);
+    case 'portafolio': return secPortfolio(p);
+    default: return secResumen(p);
+  }
+}
+function head(title, intro, stage, p){
+  const cms = stage && p ? p.comments.filter(c => c.stage === stage) : [];
+  return `<header class="sec-head"><h2>${title}</h2>${intro ? `<p class="lead">${intro}</p>` : ''}
+    ${cms.map(c => `<div class="feedback"><b>Comentario de ${esc(c.byName)}</b> <span class="muted small">el ${fmtDate(c.date)}</span><p>${esc(c.text)}</p></div>`).join('')}</header>`;
+}
+const del = (coll, id, label = 'Eliminar') => `<button class="btn sm ghost danger" data-action="del" data-coll="${coll}" data-id="${id}">${label}</button>`;
+const fld = (coll, it, field, label, type = 'input', extra = '') => {
+  const v = getPath(it, field) ?? '';
+  const attrs = `data-coll="${coll}" data-id="${it.id}" data-field="${field}" ${extra}`;
+  return `<label class="field">${label}${type === 'textarea' ? `<textarea ${attrs}>${esc(v)}</textarea>` : `<input ${attrs} value="${esc(v)}">`}</label>`;
+};
+
+/* --- Resumen --- */
+function secResumen(p){
+  const pr = progress(p), todo = pending(p);
+  const cats = Store.data.categories.filter(c => c.active || c.name === p.category).map(c => c.name);
+  const lastEval = p.evaluations[p.evaluations.length - 1];
+  return `${head(esc(p.name), 'Tu avance se calcula con lo que registras, no con las pantallas que abres.')}
+  <div class="grid2">
+    <section class="panel">
+      <h3>Avance por etapa</h3>
+      <div class="stage-prog">${STAGES.filter(s => s.n).map(s => `<button data-action="go" data-sec="${s.id}"><span>${s.n}. ${s.label}</span>${bar(pr[s.id])}<span class="pct">${pct(pr[s.id])}%</span></button>`).join('')}</div>
+    </section>
+    <section class="panel">
+      <h3>Lo que falta</h3>
+      ${todo.length ? `<ul class="todo">${todo.slice(0, 7).map(([s, txt]) => `<li><button data-action="go" data-sec="${s}"><span class="dot"></span><span>${txt}</span></button></li>`).join('')}</ul>${todo.length > 7 ? `<p class="muted small" style="margin-top:.6rem">Y ${todo.length - 7} pendiente(s) más.</p>` : ''}`
+        : '<p>No hay pendientes. Revisa tu portafolio antes de exportarlo.</p>'}
+    </section>
+  </div>
+  <section class="block"><h3>Datos del proyecto</h3>
+    <div class="panel stack">
+      <div class="grid2">
+        <label class="field">Nombre<input data-bind="name" value="${esc(p.name)}" maxlength="80"></label>
+        <label class="field">Categoría<select data-bind="category">${opts(cats, p.category)}</select></label>
+      </div>
+      <label class="field">Descripción<textarea data-bind="description">${esc(p.description)}</textarea></label>
+      <p class="muted small" style="margin:0">Creado el ${fmtDate(p.createdAt)}. Última actualización: ${fmtDate(p.updatedAt)}. Docente: ${esc(userName(p.teacherId))}.</p>
+    </div>
+  </section>
+  <section class="block"><h3>Retroalimentación del docente</h3>
+    ${p.comments.length ? p.comments.slice().reverse().map(c => `<div class="feedback"><b>${esc(c.byName)}</b> <span class="muted small">sobre ${esc(stageLabel(c.stage))}, el ${fmtDate(c.date)}</span><p>${esc(c.text)}</p></div>`).join('') : '<p class="muted">Todavía no hay comentarios.</p>'}
+    ${lastEval ? `<div class="panel" style="margin-top:1rem"><h4>Última evaluación con rúbrica</h4><p class="muted small">${esc(lastEval.teacherName)}, ${fmtDate(lastEval.date)}</p>${rubricTable(lastEval)}${lastEval.notes ? `<p style="margin-top:.6rem">${esc(lastEval.notes)}</p>` : ''}</div>` : ''}
+  </section>`;
+}
+const stageLabel = id => (STAGES.find(s => s.id === id) || {label:'el proyecto en general'}).label;
+
+/* --- Preparación (HU-004) --- */
+function secPrep(p){
+  const reqs = [[p.team.length > 0, 'Integrantes registrados'], [p.team.some(m => filled(m.resp)), 'Responsabilidades asignadas'], [p.objectives.length > 0, 'Al menos un objetivo'], [filled(p.prep.start), 'Descripción del punto de partida']];
+  return `${head('1. Preparación', 'Organiza a tu equipo y define desde dónde parte el proyecto.', 'preparacion', p)}
+  <div class="panel tinted"><h4>Requisitos de esta etapa</h4><div class="row">${reqs.map(([ok, t]) => `<span class="tag ${ok ? 'ok' : 'pend'}">${ok ? '✓' : '○'} ${t}</span>`).join('')}</div></div>
+  <section class="block"><h3>Punto de partida</h3>
+    <label class="field">¿Qué situación observaron que les hizo pensar en este proyecto?<textarea data-bind="prep.start">${esc(p.prep.start)}</textarea></label>
+  </section>
+  <section class="block"><h3>Equipo</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>Nombre</th><th>Rol</th><th>Responsabilidad</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>
+    ${p.team.map(m => `<tr><td><input aria-label="Nombre" data-coll="team" data-id="${m.id}" data-field="name" value="${esc(m.name)}"></td><td><input aria-label="Rol" data-coll="team" data-id="${m.id}" data-field="role" value="${esc(m.role)}"></td><td><input aria-label="Responsabilidad" data-coll="team" data-id="${m.id}" data-field="resp" value="${esc(m.resp)}" placeholder="¿De qué se encarga?"></td><td>${del('team', m.id, 'Quitar')}</td></tr>`).join('')}
+    </tbody></table></div>
+    <form class="addform" data-add="team" data-msg="Integrante agregado" style="margin-top:.8rem">
+      <h4>Agregar integrante</h4>
+      <div class="grid3"><label class="field">Nombre<input name="name" required></label><label class="field">Rol<input name="role" placeholder="Ej.: Finanzas"></label><label class="field">Responsabilidad<input name="resp"></label></div>
+      <div><button class="btn primary sm" type="submit">Agregar integrante</button></div>
+    </form>
+  </section>
+  <section class="block"><h3>Objetivos</h3>
+    <div class="rec-list">${p.objectives.map((o, i) => `<div class="rec neutral"><div class="rec-head"><span><b>${i + 1}.</b> ${esc(o.text)}</span>${del('objectives', o.id)}</div></div>`).join('') || '<p class="muted">Aún no hay objetivos.</p>'}</div>
+    <form class="addform" data-add="objectives" data-msg="Objetivo agregado" style="margin-top:.8rem">
+      <label class="field">Nuevo objetivo<input name="text" required placeholder="Empieza con un verbo: reducir, probar, conseguir…"></label>
+      <div><button class="btn primary sm" type="submit">Agregar objetivo</button></div>
+    </form>
+    <p class="muted small" style="margin-top:.8rem">Las actividades y fechas se registran en <button class="linkbtn" data-action="go" data-sec="plan">Planificación</button>.</p>
+  </section>`;
+}
+
+/* --- Design Thinking (HU-005) --- */
+function secDT(p){
+  const dp = dtProgress(p).phases, ph = DT.find(x => x.id === S.dtTab);
+  const body = {empatizar:dtEmp, definir:dtDef, idear:dtIdea, prototipar:dtProto, evaluar:dtEval}[S.dtTab](p);
+  return `${head('2. Design Thinking', 'Cinco fases para entender a tus usuarios y construir una solución con fundamento.', 'dt', p)}
+  <div class="tabs" role="tablist">${DT.map(x => `<button role="tab" class="${dp[x.id] >= 1 ? 'done' : ''}" aria-selected="${S.dtTab === x.id}" data-action="dtTab" data-tab="${x.id}"><span class="n">${dp[x.id] >= 1 ? '✓' : x.n}</span>${x.label}</button>`).join('')}</div>
+  <div class="notice" style="margin-bottom:1.4rem"><span><b>${ph.label}.</b> ${ph.intro}</span></div>
+  ${body}`;
+}
+function dtEmp(p){
+  const e = p.dt.empatizar;
+  return `<section><h3>Entrevistas y observaciones</h3>
+    <div class="row small" style="margin-bottom:.8rem"><span class="tag real">Real</span> trabajo de campo con personas reales <span class="tag sim">Simulada</span> práctica, no cuenta como evidencia</div>
+    <div class="rec-list">${e.records.map(r => `<article class="rec ${r.origin === 'simulada' ? 'sim' : ''}">
+      <div class="rec-head"><h4>${esc(r.type)}: ${esc(r.person)}</h4><div class="row" style="gap:.4rem"><span class="tag ${r.origin === 'simulada' ? 'sim' : 'real'}">${r.origin === 'simulada' ? 'Simulada' : 'Real'}</span>${del('dt.empatizar.records', r.id)}</div></div>
+      <div class="rec-body"><p class="muted small" style="margin:0 0 .3rem">${fmtDate(r.date)}${r.author ? ', registrado por ' + esc(r.author) : ''}</p><p style="margin:0">${esc(r.findings)}</p>
+      ${r.origin === 'real' ? `<button class="linkbtn small" data-action="attachFor" data-stage="dt" data-req="ev1" data-title="${esc(r.type + ': ' + r.person)}">Adjuntar evidencia</button>` : ''}</div>
+    </article>`).join('') || '<div class="empty">Registra tu primera entrevista u observación.</div>'}</div>
+    <form class="addform" data-add="dt.empatizar.records" data-msg="Registro agregado" style="margin-top:1rem">
+      <h4>Nuevo registro</h4>
+      <div class="grid3">
+        <label class="field">Fecha<input type="date" name="date" value="${today()}" required></label>
+        <label class="field">Tipo<select name="type">${opts(['Entrevista', 'Observación', 'Encuesta'])}</select></label>
+        <label class="field">Origen<select name="origin">${opts([['real', 'Real (trabajo de campo)'], ['simulada', 'Simulada (práctica)']])}</select></label>
+      </div>
+      <label class="field">Persona o lugar<input name="person" required placeholder="Ej.: Productora de papa, 45 años"></label>
+      <label class="field">Hallazgos<textarea name="findings" required placeholder="¿Qué dijo, hizo o mostró? Anota hechos, no tus suposiciones."></textarea></label>
+      <div><button class="btn primary sm" type="submit">Guardar registro</button></div>
+    </form>
+  </section>
+  <section class="block"><h3>Perfil de usuario</h3>
+    <label class="field">¿Quién es tu usuario?<textarea data-bind="dt.empatizar.profile" placeholder="Edad aproximada, ocupación, contexto, cómo vive el problema.">${esc(e.profile)}</textarea></label>
+  </section>
+  <section class="block"><h3>Mapa de empatía</h3>
+    <div class="empathy">
+      ${[['dice', 'Dice', 'Frases textuales que escuchaste.'], ['piensa', 'Piensa', 'Lo que crees que le preocupa.'], ['hace', 'Hace', 'Acciones y hábitos que observaste.'], ['siente', 'Siente', 'Emociones que notaste.']].map(([k, l, h]) => `<label>${l}<small class="hint">${h}</small><textarea data-bind="dt.empatizar.map.${k}">${esc(e.map[k])}</textarea></label>`).join('')}
+    </div>
+  </section>`;
+}
+function dtDef(p){
+  const d = p.dt.definir, recs = p.dt.empatizar.records;
+  return `<div class="grid2" style="align-items:start">
+    <div class="stack">
+      <label class="field">Problema identificado<textarea data-bind="dt.definir.problem">${esc(d.problem)}</textarea></label>
+      <label class="field">Necesidades del usuario<textarea data-bind="dt.definir.needs" placeholder="Una necesidad por línea.">${esc(d.needs)}</textarea></label>
+      <label class="field">Punto de vista (POV)<small>[Usuario] necesita [necesidad] porque [hallazgo].</small><textarea data-bind="dt.definir.pov">${esc(d.pov)}</textarea></label>
+      <label class="field">Pregunta de diseño<small>¿Cómo podríamos…?</small><textarea data-bind="dt.definir.hmw">${esc(d.hmw)}</textarea></label>
+      <div class="row"><button class="btn sm" data-action="snapshot" data-src="dt.definir" data-dst="dt.definirVersions">Guardar versión</button><span class="muted small">${p.dt.definirVersions.length} versión(es) guardada(s)</span></div>
+      ${versionsList(p.dt.definirVersions, v => `<p><b>POV:</b> ${esc(v.data.pov) || '—'}</p><p><b>Pregunta:</b> ${esc(v.data.hmw) || '—'}</p>`)}
+    </div>
+    <aside class="panel tinted"><h4>Tus hallazgos</h4><p class="muted small">Relaciona tu problema con lo que encontraste.</p>
+      <div class="rec-list">${recs.map(r => `<div class="rec ${r.origin === 'simulada' ? 'sim' : ''}"><div class="rec-head"><b class="small">${esc(r.person)}</b><span class="tag ${r.origin === 'simulada' ? 'sim' : 'real'}">${r.origin === 'simulada' ? 'Simulada' : 'Real'}</span></div><div class="rec-body small">${esc(r.findings)}</div></div>`).join('') || '<p class="muted">Primero registra hallazgos en Empatizar.</p>'}</div>
+    </aside></div>`;
+}
+function versionsList(list, fn){
+  if (!list.length) return '';
+  return `<details><summary>Ver versiones anteriores</summary><div class="rec-list" style="margin-top:.6rem">${list.slice().reverse().map((v, i) => `<div class="rec neutral"><p class="muted small">Versión ${list.length - i}, ${fmtDate(v.date)} a las ${fmtTime(v.date)}</p>${fn(v)}</div>`).join('')}</div></details>`;
+}
+function dtIdea(p){
+  const i = p.dt.idear, active = i.ideas.filter(x => !x.discarded), discarded = i.ideas.filter(x => x.discarded);
+  const total = x => i.criteria.reduce((s, c) => s + (+x.scores[c.id] || 0), 0);
+  return `<section><h3>Criterios de comparación</h3>
+    <div class="chips">${i.criteria.map(c => `<span class="chip">${esc(c.name)}<button data-action="delCrit" data-id="${c.id}" aria-label="Quitar criterio ${esc(c.name)}">×</button></span>`).join('')}</div>
+    <form class="row" data-form="addCrit" style="margin-top:.6rem;max-width:460px"><input name="name" required placeholder="Nuevo criterio, ej.: Impacto ambiental" aria-label="Nuevo criterio" style="flex:1"><button class="btn sm" type="submit">Agregar criterio</button></form>
+  </section>
+  <section class="block"><h3>Matriz de selección <span class="tag ${i.ideas.length >= 4 ? 'ok' : 'pend'}">${i.ideas.length} de 4 alternativas mínimas</span></h3>
+    ${active.length ? `<div class="tbl-wrap"><table><thead><tr><th>Alternativa</th>${i.criteria.map(c => `<th>${esc(c.name)}<br><small class="muted">1 a 5</small></th>`).join('')}<th>Total</th><th>Elegida</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>
+      ${active.map(x => `<tr class="${i.chosen === x.id ? 'chosen' : ''}"><td><b>${esc(x.title)}</b><br><span class="muted small">${esc(x.desc)}</span></td>
+        ${i.criteria.map(c => `<td><select aria-label="${esc(c.name)} de ${esc(x.title)}" data-coll="dt.idear.ideas" data-id="${x.id}" data-field="scores.${c.id}" data-rerender="1">${opts([['', '—'], 1, 2, 3, 4, 5], x.scores[c.id] ?? '')}</select></td>`).join('')}
+        <td class="num">${total(x)}</td>
+        <td><input type="radio" name="chosen" value="${x.id}" data-bind="dt.idear.chosen" data-rerender="1" aria-label="Elegir ${esc(x.title)}"${i.chosen === x.id ? ' checked' : ''}></td>
+        <td>${i.chosen === x.id ? '' : `<button class="btn sm ghost" data-action="discard" data-id="${x.id}">Descartar</button>`}</td></tr>`).join('')}
+      </tbody></table></div>` : '<div class="empty">Agrega alternativas para compararlas.</div>'}
+    <form class="addform" data-add="dt.idear.ideas" data-msg="Alternativa agregada" style="margin-top:1rem">
+      <h4>Nueva alternativa</h4>
+      <div class="grid2"><label class="field">Nombre de la idea<input name="title" required></label><label class="field">¿En qué consiste?<input name="desc"></label></div>
+      <div><button class="btn primary sm" type="submit">Agregar alternativa</button></div>
+    </form>
+  </section>
+  <section class="block"><h3>Justificación</h3>
+    <label class="field">¿Por qué elegiste esta alternativa?<textarea data-bind="dt.idear.justification">${esc(i.justification)}</textarea></label>
+  </section>
+  ${discarded.length ? `<section class="block"><h3>Ideas descartadas</h3><p class="muted small">Se conservan para que puedas revisarlas más adelante.</p><div class="rec-list">${discarded.map(x => `<div class="rec neutral"><div class="rec-head"><span><b>${esc(x.title)}</b> <span class="muted">puntaje ${total(x)}</span></span><button class="btn sm" data-action="restore" data-id="${x.id}">Recuperar</button></div></div>`).join('')}</div></section>` : ''}`;
+}
+function dtProto(p){
+  const vs = p.dt.prototipar.versions, c = 'dt.prototipar.versions';
+  return `<div class="rec-list">${vs.map(v => `<article class="rec ${v.status === 'construido' ? '' : 'neutral'}">
+    <div class="rec-head"><h4>Versión ${v.v}</h4><div class="row" style="gap:.4rem">
+      <select aria-label="Estado de la versión ${v.v}" data-coll="${c}" data-id="${v.id}" data-field="status" data-rerender="1" style="width:auto">${opts([['planificado', 'Planificado'], ['construido', 'Construido']], v.status)}</select>${del(c, v.id)}</div></div>
+    <div class="stack" style="margin-top:.6rem">
+      ${fld(c, v, 'desc', 'Descripción', 'textarea')}
+      <div class="grid2">${fld(c, v, 'materials', 'Materiales, recursos y herramientas')}${fld(c, v, 'specs', 'Medidas o características')}</div>
+      ${v.v > 1 ? fld(c, v, 'changes', 'Cambios respecto a la versión anterior', 'textarea') : ''}
+      ${v.status === 'construido' ? `<button class="linkbtn small" data-action="attachFor" data-stage="dt" data-req="ev2" data-title="Prototipo versión ${v.v}" style="justify-self:start">Adjuntar fotografía del prototipo</button>` : ''}
+    </div></article>`).join('') || '<div class="empty">Describe tu primer prototipo.</div>'}</div>
+  <form class="addform" data-add="${c}" data-msg="Versión agregada" style="margin-top:1rem">
+    <h4>Nueva versión del prototipo</h4>
+    <label class="field">Descripción<textarea name="desc" required></textarea></label>
+    <div class="grid3"><label class="field">Materiales<input name="materials"></label><label class="field">Medidas o características<input name="specs"></label><label class="field">Estado<select name="status">${opts([['planificado', 'Planificado'], ['construido', 'Construido']])}</select></label></div>
+    ${vs.length ? '<label class="field">Cambios respecto a la versión anterior<input name="changes"></label>' : ''}
+    <div><button class="btn primary sm" type="submit">Agregar versión</button></div>
+  </form>`;
+}
+function dtEval(p){
+  const vs = p.dt.prototipar.versions, tests = p.dt.evaluar.tests;
+  return `<div class="rec-list">${tests.map(t => `<article class="rec"><div class="rec-head"><h4>${esc(t.objective)}</h4><div class="row" style="gap:.4rem"><span class="tag">Versión ${esc(t.version)}</span>${del('dt.evaluar.tests', t.id)}</div></div>
+    <p class="muted small">${fmtDate(t.date)}</p><p><b>Resultados:</b> ${esc(t.results)}</p>${t.comments ? `<p><b>Comentarios recibidos:</b> ${esc(t.comments)}</p>` : ''}${t.problems ? `<p><b>Problemas:</b> ${esc(t.problems)}</p>` : ''}${t.improvements ? `<p><b>Mejoras:</b> ${esc(t.improvements)}</p>` : ''}</article>`).join('') || '<div class="empty">Aún no registras pruebas del prototipo.</div>'}</div>
+  ${vs.length ? `<form class="addform" data-add="dt.evaluar.tests" data-msg="Prueba registrada" style="margin-top:1rem">
+    <h4>Registrar prueba</h4>
+    <div class="grid3"><label class="field">Fecha<input type="date" name="date" value="${today()}" required></label><label class="field">Versión evaluada<select name="version">${opts(vs.map(v => [v.v, 'Versión ' + v.v]), vs[vs.length - 1].v)}</select></label></div>
+    <label class="field">Objetivo de la prueba<input name="objective" required placeholder="¿Qué querías comprobar?"></label>
+    <label class="field">Resultados<textarea name="results" required></textarea></label>
+    <div class="grid2"><label class="field">Comentarios recibidos<textarea name="comments"></textarea></label><label class="field">Problemas encontrados<textarea name="problems"></textarea></label></div>
+    <label class="field">Mejoras propuestas o realizadas<textarea name="improvements"></textarea></label>
+    <div><button class="btn primary sm" type="submit">Guardar prueba</button></div>
+  </form>` : '<p class="muted" style="margin-top:1rem">Primero registra una versión del prototipo.</p>'}`;
+}
+
+/* --- Simulador (HU-006) --- */
+function secSim(p){
+  const active = SCENARIOS.filter(s => (Store.data.scenarios.find(x => x.id === s.id) || {}).active);
+  const st = S.sim;
+  let inner;
+  if (!st) {
+    inner = `<h3>Elige un escenario</h3>
+      <div class="rec-list">${active.map(s => `<div class="rec sim"><div class="rec-head"><h4>${esc(s.title)}</h4><span class="tag sim">${esc(s.category)}</span></div><div class="rec-body"><p>${esc(s.context)}</p><button class="btn primary sm" data-action="simStart" data-id="${s.id}">Iniciar simulación</button></div></div>`).join('') || '<p class="muted">No hay escenarios activos. Consulta con la administración.</p>'}</div>
+      ${p.simulations.length ? `<section class="block"><h3>Tus prácticas anteriores</h3><div class="rec-list">${p.simulations.slice().reverse().map(r => `<div class="rec sim"><div class="rec-head"><b>${esc(r.title)}</b><span class="tag sim">${r.score} de ${r.max} puntos</span></div><div class="rec-body small"><p style="margin:0">${fmtDate(r.date)}. Conclusión: ${esc(r.conclusion)} ${r.correct ? '<span class="tag ok">Acertada</span>' : '<span class="tag pend">Por mejorar</span>'}</p>${r.reflection ? `<p style="margin:.3rem 0 0"><i>${esc(r.reflection)}</i></p>` : ''}</div></div>`).join('')}</div></section>` : ''}`;
+  } else {
+    const sc = SCENARIOS.find(s => s.id === st.scenarioId);
+    const left = sc.maxQ - st.asked.length;
+    if (st.phase === 'interview') {
+      const ch = sc.chars.find(c => c.id === st.char);
+      inner = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">${esc(sc.title)}</h3><span class="tag sim">${left} pregunta(s) disponible(s)</span></div>
+        <p class="muted" style="margin-top:.5rem">${esc(sc.context)}</p>
+        <h4>¿A quién quieres entrevistar?</h4>
+        <div class="chars">${sc.chars.map(c => `<button class="char" aria-pressed="${st.char === c.id}" data-action="simChar" data-id="${c.id}"><span class="avatar" aria-hidden="true">${initials(c.name)}</span><b>${esc(c.name)}</b><small>${esc(c.role)}</small></button>`).join('')}</div>
+        <div class="chat" aria-live="polite">${st.asked.map(a => { const c = sc.chars.find(x => x.id === a.c), q = c.qs[a.q]; return `<div class="bubble q"><span class="who">Tú a ${esc(c.name)}</span>${esc(q.q)}</div><div class="bubble a"><span class="who">${esc(c.name)} (simulado)</span>${esc(q.a)}</div>`; }).join('') || '<p class="muted">Elige a una persona y hazle una pregunta.</p>'}</div>
+        ${ch && left > 0 ? `<h4>Preguntas para ${esc(ch.name)}</h4><div class="qopts">${ch.qs.map((q, i) => { const used = st.asked.some(a => a.c === ch.id && a.q === i); return `<button data-action="simAsk" data-q="${i}"${used ? ' disabled' : ''}>${esc(q.q)}${used ? ' <span class="muted small">(ya preguntada)</span>' : ''}</button>`; }).join('')}</div>` : ''}
+        <div class="row" style="margin-top:1.2rem;justify-content:space-between"><button class="btn ghost sm" data-action="simCancel">Salir sin guardar</button><button class="btn primary" data-action="simToConclude"${st.asked.length ? '' : ' disabled'}>Pasar a la conclusión</button></div>`;
+    } else if (st.phase === 'conclude') {
+      inner = `<h3>¿Qué problema necesitas investigar?</h3><p class="muted">Elige la conclusión que mejor se apoya en lo que escuchaste.</p>
+        <form data-form="simConclude" class="concl">${sc.conclusions.map((c, i) => `<label><input type="radio" name="c" value="${i}" required><span>${esc(c.text)}</span></label>`).join('')}
+        <div class="row" style="justify-content:space-between;margin-top:.6rem"><button type="button" class="btn ghost sm" data-action="simBack">Volver a las entrevistas</button><button class="btn primary" type="submit">Ver retroalimentación</button></div></form>`;
+    } else {
+      const r = st.result;
+      inner = `<div class="row" style="align-items:flex-end;gap:1.2rem"><div><span class="score">${r.score}</span><span class="muted"> de ${r.max} puntos</span></div><p style="margin:0;max-width:52ch">${r.score >= 15 ? 'Investigaste bien: escuchaste a varias fuentes y llegaste a una conclusión con fundamento.' : r.score >= 9 ? 'Vas por buen camino. Revisa qué preguntas te dieron más información.' : 'Practica de nuevo con preguntas abiertas sobre la experiencia de las personas.'}</p></div>
+        <h4 style="margin-top:1.3rem">Sobre tus preguntas</h4>
+        <ul class="fb-list">${r.items.map(it => `<li class="${it.pts >= 2 ? 'good' : 'weak'}"><b>${esc(it.q)}</b> <span class="tag">${esc(it.kind)}</span><br>${esc(it.fb)}</li>`).join('')}
+        ${r.diversity ? '<li class="good"><b>Entrevistaste a los tres perfiles.</b> Contrastar fuentes te da una visión más completa (+2).</li>' : '<li class="weak"><b>No entrevistaste a todos los perfiles.</b> Escuchar a cada actor ayuda a no sacar conclusiones apresuradas.</li>'}</ul>
+        <h4 style="margin-top:1.3rem">Sobre tu conclusión</h4><div class="feedback"><b>${esc(r.conclusion)}</b><p>${esc(r.cfb)}</p></div>
+        <form data-form="simSave" class="stack" style="margin-top:1.3rem">
+          <label class="field">¿Qué aprendiste en esta práctica?<textarea name="reflection" placeholder="Por ejemplo: qué preguntas harías distinto con usuarios reales."></textarea></label>
+          <label class="check"><input type="checkbox" name="copy"> Copiar los hallazgos a Empatizar como registro simulado (no contará como evidencia real)</label>
+          <div class="row" style="justify-content:space-between"><button type="button" class="btn ghost sm" data-action="simCancel">Descartar resultado</button><button class="btn primary" type="submit">Guardar resultado</button></div>
+        </form>`;
+    }
+  }
+  return `${head('Simulador', 'Practica entrevistas y decisiones antes de trabajar con usuarios reales. Aquí puedes equivocarte sin consecuencias.', 'simulador', p)}
+  <div class="sim-frame"><div class="sim-inner">
+    <div class="sim-banner"><span class="tag sim">Escenario simulado</span><span class="muted small">Las respuestas son de personajes ficticios. No se registran como entrevistas ni evidencias reales.</span></div>
+    ${inner}
+  </div></div>`;
+}
+
+/* --- Lean Canvas (HU-007) --- */
+function secCanvas(p){
+  const done = CANVAS.filter(b => filled(p.canvas[b.key])).length;
+  return `${head('3. Lean Canvas', 'Estructura tu modelo de negocio en nueve bloques. Puedes completarlos en cualquier orden; el número indica el orden sugerido.', 'canvas', p)}
+  <div class="row" style="justify-content:space-between;margin-bottom:.8rem"><span class="tag ${done === 9 ? 'ok' : 'pend'}">${done} de 9 bloques completos</span>
+    <button class="btn sm" data-action="snapshot" data-src="canvas" data-dst="canvasVersions">Guardar versión del canvas</button></div>
+  <div class="canvas">${CANVAS.map(b => `<label class="cb a-${b.a}${filled(p.canvas[b.key]) ? ' filled' : ''}"><header><span class="n">${b.n}</span><h4>${b.label}</h4></header><small>${b.hint}</small><textarea data-bind="canvas.${b.key}" aria-label="${b.label}">${esc(p.canvas[b.key])}</textarea></label>`).join('')}</div>
+  ${p.canvasVersions.length ? `<div style="margin-top:.8rem">${versionsList(p.canvasVersions, v => `<div class="grid3 small">${CANVAS.map(b => `<div><b>${b.label}</b><br>${esc(v.data[b.key]) || '<span class="muted">—</span>'}</div>`).join('')}</div>`)}</div>` : ''}
+  <section class="block"><h3>Hipótesis por validar</h3>
+    <p class="muted">Cada bloque del canvas es una suposición hasta que lo compruebas. Solo puedes marcar una hipótesis como validada o refutada si registras el resultado.</p>
+    <div class="rec-list">${p.hypotheses.map(h => hypCard(p, h)).join('') || '<div class="empty">Formula tu primera hipótesis.</div>'}</div>
+    <form class="addform" data-add="hypotheses" data-msg="Hipótesis agregada" style="margin-top:1rem">
+      <h4>Nueva hipótesis</h4>
+      <div class="grid2"><label class="field">Bloque relacionado<select name="block">${opts(CANVAS.map(b => [b.key, b.label]))}</select></label><label class="field">Método de validación<input name="method" placeholder="Ej.: entrevistas, preventa, piloto"></label></div>
+      <label class="field">Hipótesis<input name="text" required placeholder="Creemos que… Lo sabremos si…"></label>
+      <div><button class="btn primary sm" type="submit">Agregar hipótesis</button></div>
+    </form>
+  </section>`;
+}
+function hypCard(p, h){
+  const linked = p.validations.filter(v => v.hypothesisId === h.id).length;
+  const cls = {pendiente:'pend', validada:'ok', refutada:'bad'}[h.status];
+  return `<article class="rec neutral"><div class="rec-head"><h4>${esc(h.text)}</h4><div class="row" style="gap:.4rem"><span class="tag ${cls}">${HYP[h.status]}</span>${del('hypotheses', h.id)}</div></div>
+    <p class="muted small" style="margin:.3rem 0 .6rem">Bloque: ${esc((CANVAS.find(b => b.key === h.block) || {}).label)}. ${linked} prueba(s) asociada(s) en Ejecución y validación.</p>
+    <div class="grid2">${fld('hypotheses', h, 'method', 'Método de validación')}
+      <label class="field">Estado<select data-coll="hypotheses" data-id="${h.id}" data-field="status" data-guard="hyp" data-rerender="1">${opts(Object.entries(HYP), h.status)}</select></label></div>
+    <div style="margin-top:.6rem">${fld('hypotheses', h, 'result', 'Resultado obtenido', 'textarea', 'placeholder="Necesario para marcarla como validada o refutada."')}</div>
+  </article>`;
+}
+
+/* --- Planificación (HU-008) --- */
+function secPlan(p){
+  const acts = p.activities.slice().sort((a, b) => (a.start || '').localeCompare(b.start || ''));
+  const names = p.team.map(m => m.name);
+  const late = a => a.status !== 'completada' && a.end && a.end < today();
+  return `${head('4. Planificación', 'Organiza las actividades, asigna responsables y sigue el avance.', 'plan', p)}
+  <div class="board">${Object.entries(STATUS).map(([k, l]) => { const list = acts.filter(a => a.status === k); return `<section class="col" aria-label="${l}"><h4>${l} <span class="muted">${list.length}</span></h4>
+    ${list.map(a => `<div class="task${late(a) ? ' late' : ''}"><b>${esc(a.title)}</b><span class="meta">${esc(a.resp) || 'Sin responsable'}. ${fmtDate(a.start)} al ${fmtDate(a.end)}</span>${late(a) ? '<span class="tag bad">Atrasada</span>' : ''}
+      <select aria-label="Estado de ${esc(a.title)}" data-coll="activities" data-id="${a.id}" data-field="status" data-rerender="1">${opts(Object.entries(STATUS), a.status)}</select></div>`).join('') || '<p class="muted small" style="margin:0">Sin actividades.</p>'}</section>`; }).join('')}</div>
+  <section class="block"><h3>Cronograma</h3>
+    ${acts.length ? `<div class="tbl-wrap"><table><thead><tr><th>Actividad</th><th>Responsable</th><th>Inicio</th><th>Fin</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>
+    ${acts.map(a => `<tr><td>${esc(a.title)}</td><td>${esc(a.resp)}</td><td>${fmtDate(a.start)}</td><td>${fmtDate(a.end)}</td><td><span class="tag ${a.status === 'completada' ? 'ok' : a.status === 'progreso' ? 'plan' : 'pend'}">${STATUS[a.status]}</span></td><td>${del('activities', a.id)}</td></tr>`).join('')}
+    </tbody></table></div>` : '<div class="empty">Agrega tu primera actividad.</div>'}
+    <form class="addform" data-add="activities" data-msg="Actividad agregada" style="margin-top:1rem">
+      <h4>Nueva actividad</h4>
+      <label class="field">Actividad<input name="title" required></label>
+      <div class="grid3"><label class="field">Responsable<select name="resp">${opts(names)}</select></label><label class="field">Inicio<input type="date" name="start" required value="${today()}"></label><label class="field">Fin<input type="date" name="end" required></label></div>
+      <div><button class="btn primary sm" type="submit">Agregar actividad</button></div>
+    </form>
+  </section>
+  <section class="block"><h3>Riesgos y dificultades</h3>
+    <div class="rec-list">${p.risks.map(r => `<div class="rec neutral"><div class="rec-head"><b>${esc(r.text)}</b>${del('risks', r.id)}</div>${r.plan ? `<p class="small" style="margin:.3rem 0 0">Qué haremos: ${esc(r.plan)}</p>` : ''}</div>`).join('') || '<p class="muted">Sin riesgos registrados.</p>'}</div>
+    <form class="addform" data-add="risks" data-msg="Riesgo registrado" style="margin-top:.8rem"><div class="grid2"><label class="field">Riesgo o dificultad<input name="text" required></label><label class="field">¿Qué harán si ocurre?<input name="plan"></label></div><div><button class="btn primary sm" type="submit">Registrar riesgo</button></div></form>
+  </section>`;
+}
+
+/* --- Ejecución y validación (HU-009) --- */
+function secVal(p){
+  const hy = p.hypotheses;
+  return `${head('5. Ejecución y validación', 'Registra lo que hiciste de verdad y lo que pasó. Los resultados negativos también son aprendizajes valiosos.', 'validacion', p)}
+  <div class="rec-list">${p.validations.slice().reverse().map(v => { const h = hy.find(x => x.id === v.hypothesisId); return `<article class="rec ${v.origin === 'hipotetico' ? 'sim' : ''}">
+    <div class="rec-head"><h4>${esc(v.action)}</h4><div class="row" style="gap:.4rem"><span class="tag ${v.origin === 'hipotetico' ? 'sim' : 'real'}">${v.origin === 'hipotetico' ? 'Valor estimado' : 'Dato real'}</span>${del('validations', v.id)}</div></div>
+    <div class="rec-body small"><p class="muted" style="margin:0 0 .3rem">${fmtDate(v.date)}. Método: ${esc(v.method)}${h ? `. Hipótesis: «${esc(h.text)}»` : ''}</p>
+    <p style="margin:0 0 .3rem"><b>Resultados:</b> ${esc(v.results)}</p>
+    ${v.cost ? `<p style="margin:0 0 .3rem"><b>Costo:</b> S/ ${esc(v.cost)}</p>` : ''}${v.orders ? `<p style="margin:0 0 .3rem"><b>Ventas o pedidos:</b> ${esc(v.orders)}</p>` : ''}
+    ${v.adjustments ? `<p style="margin:0 0 .3rem"><b>Ajustes:</b> ${esc(v.adjustments)}</p>` : ''}${v.learnings ? `<p style="margin:0"><b>Aprendizaje:</b> ${esc(v.learnings)}</p>` : ''}</div></article>`; }).join('') || '<div class="empty">Aún no registras pruebas con usuarios.</div>'}</div>
+  <form class="addform" data-add="validations" data-msg="Prueba registrada" style="margin-top:1rem">
+    <h4>Registrar acción realizada</h4>
+    <div class="grid3"><label class="field">Fecha<input type="date" name="date" value="${today()}" required></label>
+      <label class="field">Método<select name="method">${opts(['Prueba con usuarios', 'Entrevista', 'Encuesta', 'Preventa', 'Piloto', 'Otro'])}</select></label>
+      <label class="field">Tipo de dato<select name="origin">${opts([['real', 'Dato real'], ['hipotetico', 'Valor estimado o hipotético']])}</select></label></div>
+    <label class="field">¿Qué hicieron?<input name="action" required placeholder="Ej.: Primer día de acopio con 4 productores"></label>
+    <label class="field">Hipótesis que pone a prueba<select name="hypothesisId">${opts([['', 'Ninguna'], ...hy.map(h => [h.id, h.text])])}</select></label>
+    <label class="field">Resultados y observaciones<textarea name="results" required></textarea></label>
+    <div class="grid2"><label class="field">Costos y recursos utilizados (S/)<input name="cost" inputmode="decimal"></label><label class="field">Ventas o pedidos <small>Déjalo vacío si aún no hay.</small><input name="orders"></label></div>
+    <div class="grid2"><label class="field">Ajustes realizados después<textarea name="adjustments"></textarea></label><label class="field">Aprendizaje<textarea name="learnings"></textarea></label></div>
+    <label class="check"><input type="checkbox" name="copyResult"> Usar estos resultados como resultado de la hipótesis seleccionada</label>
+    <div><button class="btn primary sm" type="submit">Guardar registro</button></div>
+  </form>`;
+}
+
+/* --- Evidencias (HU-010) --- */
+function secEv(p){
+  const cfg = Store.data.config, cl = Store.data.checklist, pf = S.prefill || {};
+  const groups = STAGES.filter(s => s.n && s.id !== 'portafolio' && s.id !== 'evidencias');
+  const accept = cfg.types.split(',').map(x => '.' + x.trim()).join(',');
+  const evRow = e => `<article class="rec ${e.kind === 'practica' ? 'sim' : ''}"><div class="rec-head"><h4>${esc(e.title)}</h4><div class="row" style="gap:.4rem"><span class="tag ${e.kind === 'practica' ? 'sim' : 'real'}">${e.kind === 'practica' ? 'Material de práctica' : 'Evidencia real'}</span><button class="btn sm ghost" data-action="download" data-id="${e.id}">Descargar</button>${del('evidences', e.id)}</div></div>
+    <div class="rec-body small"><p style="margin:0">${esc(e.fileName)} (${(e.size / 1048576).toFixed(1)} MB). Subido por ${esc(e.author)} el ${fmtDate(e.date)}.</p>${e.desc ? `<p style="margin:.3rem 0 0">${esc(e.desc)}</p>` : ''}${e.req ? `<p style="margin:.3rem 0 0" class="muted">Cumple: ${esc((cl.find(c => c.id === e.req) || {}).name)}</p>` : ''}</div></article>`;
+  return `${head('6. Evidencias', 'Adjunta fotos, documentos y archivos que muestran el trabajo realizado en cada etapa.', 'evidencias', p)}
+  <section class="panel"><h3>Lista de comprobación</h3>
+    <ul class="todo">${cl.map(c => { const ok = p.evidences.some(e => e.req === c.id && e.kind === 'real'); return `<li><span class="row" style="gap:.6rem;padding:.35rem 0"><span class="tag ${ok ? 'ok' : 'pend'}">${ok ? '✓ Entregada' : 'Falta'}</span>${esc(c.name)}</span></li>`; }).join('')}</ul>
+  </section>
+  <form class="addform block" data-add="evidences" data-msg="Evidencia subida">
+    <h4>Subir evidencia</h4>
+    <label class="field">Archivo<input type="file" name="file" required accept="${esc(accept)}"><small>Formatos: ${esc(cfg.types)}. Tamaño máximo: ${cfg.maxMB} MB.</small></label>
+    <div class="grid2"><label class="field">Título<input name="title" required value="${esc(pf.title || '')}"></label>
+      <label class="field">Tipo<select name="kind">${opts([['real', 'Evidencia real'], ['practica', 'Material de práctica']])}</select></label></div>
+    <div class="grid2"><label class="field">Etapa<select name="stage">${opts(groups.map(s => [s.id, s.label]), pf.stage || 'dt')}</select></label>
+      <label class="field">Requisito que cumple<select name="req">${opts([['', 'Ninguno en particular'], ...cl.map(c => [c.id, c.name])], pf.req || '')}</select></label></div>
+    <label class="field">Descripción<input name="desc"></label>
+    <div><button class="btn primary sm" type="submit">Subir evidencia</button></div>
+  </form>
+  ${groups.map(g => { const list = p.evidences.filter(e => e.stage === g.id); return list.length ? `<section class="block"><h3>${g.label}</h3><div class="rec-list">${list.map(evRow).join('')}</div></section>` : ''; }).join('')}
+  ${!p.evidences.length ? '<div class="empty block">Aún no hay evidencias.</div>' : ''}`;
+}
+
+/* --- Portafolio (HU-011) --- */
+function secPortfolio(p){
+  return `${head('7. Portafolio', 'Revisa el documento que se genera con lo que registraste. Las secciones incompletas aparecen marcadas.', 'portafolio', p)}
+  <div class="pf-toolbar"><button class="btn primary" data-action="print">Exportar a PDF</button><span class="muted small">En la ventana de impresión, elige «Guardar como PDF».</span></div>
+  ${portfolioHTML(p)}`;
+}
+function portfolioHTML(p){
+  const dt = p.dt, miss = (ok, msg) => ok ? '' : `<div class="pf-missing">Sección incompleta: ${msg}</div>`;
+  const real = dt.empatizar.records.filter(r => r.origin === 'real'), sim = dt.empatizar.records.filter(r => r.origin === 'simulada');
+  const chosen = dt.idear.ideas.find(i => i.id === dt.idear.chosen);
+  const evReal = p.evidences.filter(e => e.kind === 'real'), evPr = p.evidences.filter(e => e.kind === 'practica');
+  return `<article class="portfolio" id="portfolio">
+  <div class="pf-cover"><p class="pf-meta">Portafolio de proyecto. Crea y Emprende</p><h1>${esc(p.name)}</h1><p>${esc(p.description)}</p>
+    <p class="pf-meta">Categoría: ${esc(p.category)}. Docente asesor: ${esc(userName(p.teacherId))}. Generado el ${fmtDate(nowISO())}.</p></div>
+  <h2>1. Equipo y objetivos</h2>
+  <table><thead><tr><th>Integrante</th><th>Rol</th><th>Responsabilidad</th></tr></thead><tbody>${p.team.map(m => `<tr><td>${esc(m.name)}</td><td>${esc(m.role)}</td><td>${esc(m.resp)}</td></tr>`).join('')}</tbody></table>
+  ${p.objectives.length ? `<ol>${p.objectives.map(o => `<li>${esc(o.text)}</li>`).join('')}</ol>` : miss(false, 'no hay objetivos registrados.')}
+  ${p.prep.start ? `<p><b>Punto de partida:</b> ${esc(p.prep.start)}</p>` : ''}
+  <h2>2. Design Thinking</h2>
+  <h3>Empatizar</h3>
+  ${real.length ? real.map(r => `<p><span class="tag real">Real</span> <b>${esc(r.type)}, ${fmtDate(r.date)}:</b> ${esc(r.person)}. ${esc(r.findings)}</p>`).join('') : miss(false, 'no hay entrevistas u observaciones reales.')}
+  ${sim.length ? `<div class="pf-sim"><b>Práctica simulada.</b> Estos registros provienen de simulaciones y no constituyen evidencia de trabajo de campo.<br>${sim.map(r => esc(r.findings)).join('<br>')}</div>` : ''}
+  ${dt.empatizar.profile ? `<p><b>Perfil de usuario:</b> ${esc(dt.empatizar.profile)}</p>` : ''}
+  <h3>Definir</h3>
+  ${dt.definir.pov ? `<p><b>Problema:</b> ${esc(dt.definir.problem)}</p><p><b>Punto de vista:</b> ${esc(dt.definir.pov)}</p><p><b>Pregunta de diseño:</b> ${esc(dt.definir.hmw)}</p>` : miss(false, 'falta el punto de vista del usuario.')}
+  <h3>Idear</h3>
+  ${chosen ? `<p>Se evaluaron ${dt.idear.ideas.length} alternativas con los criterios: ${dt.idear.criteria.map(c => esc(c.name)).join(', ')}.</p><p><b>Alternativa elegida:</b> ${esc(chosen.title)}. ${esc(dt.idear.justification)}</p>` : miss(false, 'no se ha elegido una alternativa.')}
+  <h3>Prototipar</h3>
+  ${dt.prototipar.versions.length ? dt.prototipar.versions.map(v => `<p><b>Versión ${v.v}</b> <span class="tag ${v.status === 'construido' ? 'ok' : 'pend'}">${v.status === 'construido' ? 'Construido' : 'Planificado'}</span> ${esc(v.desc)}${v.materials ? ` Materiales: ${esc(v.materials)}.` : ''}</p>`).join('') : miss(false, 'no hay prototipo documentado.')}
+  <h3>Evaluar</h3>
+  ${dt.evaluar.tests.length ? dt.evaluar.tests.map(t => `<p><b>${esc(t.objective)}</b> (versión ${esc(t.version)}): ${esc(t.results)} ${t.improvements ? 'Mejoras: ' + esc(t.improvements) : ''}</p>`).join('') : miss(false, 'no hay pruebas del prototipo.')}
+  <h2>3. Lean Canvas</h2>
+  <div class="pf-canvas">${CANVAS.map(b => `<div><b>${b.n}. ${b.label}</b>${esc(p.canvas[b.key]).replace(/\n/g, '<br>') || '<span style="color:#B53925">Sin completar</span>'}</div>`).join('')}</div>
+  ${p.hypotheses.length ? `<h3>Hipótesis</h3><table><thead><tr><th>Hipótesis</th><th>Método</th><th>Estado</th><th>Resultado</th></tr></thead><tbody>${p.hypotheses.map(h => `<tr><td>${esc(h.text)}</td><td>${esc(h.method)}</td><td><span class="tag ${{pendiente:'pend', validada:'ok', refutada:'bad'}[h.status]}">${HYP[h.status]}</span></td><td>${esc(h.result) || '—'}</td></tr>`).join('')}</tbody></table>` : ''}
+  <h2>4. Planificación</h2>
+  ${p.activities.length ? `<table><thead><tr><th>Actividad</th><th>Responsable</th><th>Fechas</th><th>Estado</th></tr></thead><tbody>${p.activities.slice().sort((a, b) => (a.start || '').localeCompare(b.start || '')).map(a => `<tr><td>${esc(a.title)}</td><td>${esc(a.resp)}</td><td>${fmtDate(a.start)} al ${fmtDate(a.end)}</td><td>${STATUS[a.status]}</td></tr>`).join('')}</tbody></table>` : miss(false, 'no hay actividades planificadas.')}
+  <h2>5. Ejecución y validación</h2>
+  ${p.validations.length ? p.validations.map(v => `<p><span class="tag ${v.origin === 'hipotetico' ? 'sim' : 'real'}">${v.origin === 'hipotetico' ? 'Valor estimado' : 'Dato real'}</span> <b>${esc(v.action)}</b> (${fmtDate(v.date)}): ${esc(v.results)}${v.learnings ? ' Aprendizaje: ' + esc(v.learnings) : ''}</p>`).join('') : miss(false, 'no hay pruebas con usuarios registradas.')}
+  <h2>6. Evidencias</h2>
+  ${evReal.length ? `<ul>${evReal.map(e => `<li><b>${esc(e.title)}</b> (${esc(stageLabel(e.stage))}, ${fmtDate(e.date)}): ${esc(e.fileName)}</li>`).join('')}</ul>` : miss(false, 'no hay evidencias reales.')}
+  ${evPr.length ? `<div class="pf-sim"><b>Material de práctica:</b> ${evPr.map(e => esc(e.title)).join(', ')}.</div>` : ''}
+  <p class="pf-disclaimer">Este portafolio se generó con la información registrada por el equipo en el Laboratorio Virtual de Emprendimiento. Es un documento de apoyo para preparar el proyecto y no garantiza el cumplimiento de los requisitos oficiales del concurso Crea y Emprende.</p>
+  </article>`;
+}
+
+/* ---------- Docente (HU-012) ---------- */
+function teacherView(){
+  const list = API.projectsFor(me());
+  const p = S.reviewId ? list.find(x => x.id === S.reviewId) : null;
+  if (!p) {
+    const cols = ['preparacion', 'dt', 'canvas', 'plan', 'validacion', 'evidencias'];
+    return `<main class="page"><div class="page-head"><div><h1>Proyectos asignados</h1><p class="lead">Revisa el avance de cada equipo y deja retroalimentación por etapa.</p></div></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Proyecto</th><th>Equipo</th>${cols.map(c => `<th>${STAGES.find(s => s.id === c).label}</th>`).join('')}<th>Actualizado</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>
+    ${list.map(p => { const pr = progress(p); return `<tr><td><b>${esc(p.name)}</b><br><span class="muted small">${esc(p.category)}</span></td><td class="small">${p.team.map(m => esc(m.name)).join(', ')}</td>${cols.map(c => `<td style="min-width:90px">${bar(pr[c])}<span class="small muted">${pct(pr[c])}%</span></td>`).join('')}<td class="small">${fmtDate(p.updatedAt)}</td><td><button class="btn sm primary" data-action="review" data-id="${p.id}">Revisar</button></td></tr>`; }).join('')}
+    </tbody></table></div></main>`;
+  }
+  const pr = progress(p), todo = pending(p);
+  return `<main class="page" style="max-width:1280px">
+    <button class="linkbtn no-print" data-action="review" data-id="">Volver a proyectos asignados</button>
+    <div class="page-head no-print" style="margin-top:.6rem"><div><h1>${esc(p.name)}</h1><p class="lead">${p.team.map(m => esc(m.name)).join(', ')}</p></div><button class="btn" data-action="print">Exportar portafolio a PDF</button></div>
+    <div class="review">
+      <div class="stack">
+        <section class="panel no-print"><h3>Avance por etapa</h3><div class="stage-prog">${STAGES.filter(s => s.n).map(s => `<button tabindex="-1" style="cursor:default"><span>${s.n}. ${s.label}</span>${bar(pr[s.id])}<span class="pct">${pct(pr[s.id])}%</span></button>`).join('')}</div>
+          ${todo.length ? `<details style="margin-top:.8rem"><summary>${todo.length} actividades pendientes</summary><ul>${todo.map(([s, t]) => `<li class="small">${esc(stageLabel(s))}: ${esc(t)}</li>`).join('')}</ul></details>` : ''}</section>
+        <p class="notice no-print">Vista de solo lectura. El docente no puede modificar las respuestas del estudiante; sus comentarios y evaluaciones quedan registrados con nombre y fecha.</p>
+        ${portfolioHTML(p)}
+      </div>
+      <aside class="no-print">
+        <form class="panel stack" data-form="comment"><h3>Retroalimentación</h3>
+          <label class="field">Etapa<select name="stage">${opts([...STAGES.filter(s => s.n || s.practice).map(s => [s.id, s.label]), ['general', 'Proyecto en general']])}</select></label>
+          <label class="field">Comentario<textarea name="text" required></textarea></label>
+          <button class="btn primary sm" type="submit">Enviar comentario</button>
+          ${p.comments.length ? `<details><summary>${p.comments.length} comentario(s) enviados</summary>${p.comments.slice().reverse().map(c => `<div class="feedback small"><b>${esc(stageLabel(c.stage))}</b>, ${fmtDate(c.date)}<p>${esc(c.text)}</p></div>`).join('')}</details>` : ''}
+        </form>
+        <form class="panel stack" data-form="evaluate"><h3>Evaluación con rúbrica</h3>
+          <div class="rubric">${Store.data.rubric.map(r => `<label>${esc(r.name)}<select name="${r.id}" required>${opts([['', 'Elegir'], [1, '1 En inicio'], [2, '2 En proceso'], [3, '3 Logrado'], [4, '4 Destacado']])}</select></label>`).join('')}</div>
+          <label class="field">Observaciones<textarea name="notes"></textarea></label>
+          <button class="btn primary sm" type="submit">Guardar evaluación</button>
+          ${p.evaluations.length ? `<details><summary>${p.evaluations.length} evaluación(es) anteriores</summary>${p.evaluations.slice().reverse().map(e => `<div style="margin-top:.6rem"><p class="small muted">${esc(e.teacherName)}, ${fmtDate(e.date)}</p>${rubricTable(e)}</div>`).join('')}</details>` : ''}
+        </form>
+      </aside>
+    </div></main>`;
+}
+function rubricTable(e){
+  const lv = ['', 'En inicio', 'En proceso', 'Logrado', 'Destacado'];
+  return `<div class="tbl-wrap"><table class="small"><tbody>${Store.data.rubric.map(r => `<tr><td>${esc(r.name)}</td><td class="num">${e.scores[r.id] ? e.scores[r.id] + ' ' + lv[e.scores[r.id]] : '—'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ---------- Administración (HU-013) ---------- */
+function adminView(){
+  const D = Store.data, tab = S.adminTab;
+  const tabs = [['usuarios', 'Usuarios'], ['categorias', 'Categorías'], ['escenarios', 'Simulaciones'], ['contenidos', 'Evidencias y rúbrica'], ['config', 'Archivos'], ['auditoria', 'Auditoría']];
+  let body = '';
+  if (tab === 'usuarios') body = `<div class="tbl-wrap"><table><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>
+    ${D.users.map(u => `<tr><td><b>${esc(u.name)}</b></td><td class="small">${esc(u.email)}</td><td><select aria-label="Rol de ${esc(u.name)}" data-admin="role" data-id="${u.id}"${u.id === S.userId ? ' disabled' : ''}>${opts(Object.entries(ROLE_LABEL), u.role)}</select></td><td><span class="tag ${u.active ? 'ok' : 'bad'}">${u.active ? 'Activa' : 'Desactivada'}</span></td><td>${u.id === S.userId ? '' : `<button class="btn sm" data-action="toggleUser" data-id="${u.id}">${u.active ? 'Desactivar' : 'Activar'}</button>`}</td></tr>`).join('')}
+    </tbody></table></div>
+    <form class="addform block" data-form="addUser"><h4>Crear cuenta</h4><div class="grid3"><label class="field">Nombre<input name="name" required></label><label class="field">Correo<input type="email" name="email" required></label><label class="field">Rol<select name="role">${opts(Object.entries(ROLE_LABEL))}</select></label></div><div><button class="btn primary sm" type="submit">Crear cuenta</button></div><p class="hint" style="margin:0">La persona recibirá un enlace para crear su contraseña.</p></form>`;
+  if (tab === 'categorias') body = `<p class="muted">Las categorías desactivadas dejan de aparecer para proyectos nuevos, pero los proyectos existentes las conservan.</p>
+    <div class="chips">${D.categories.map(c => `<span class="chip${c.active ? '' : ' off'}">${esc(c.name)}<button data-action="toggleCat" data-id="${c.id}" aria-label="${c.active ? 'Desactivar' : 'Activar'} ${esc(c.name)}" title="${c.active ? 'Desactivar' : 'Activar'}">${c.active ? '×' : '+'}</button></span>`).join('')}</div>
+    <form class="row block" data-form="addCat" style="max-width:460px"><input name="name" required placeholder="Nueva categoría" aria-label="Nueva categoría" style="flex:1"><button class="btn primary sm" type="submit">Agregar categoría</button></form>`;
+  if (tab === 'escenarios') body = `<div class="rec-list">${SCENARIOS.map(s => { const st = D.scenarios.find(x => x.id === s.id) || {active:false}; return `<div class="rec sim"><div class="rec-head"><h4>${esc(s.title)}</h4><div class="row" style="gap:.4rem"><span class="tag ${st.active ? 'ok' : 'pend'}">${st.active ? 'Activo' : 'Inactivo'}</span><button class="btn sm" data-action="toggleScen" data-id="${s.id}">${st.active ? 'Desactivar' : 'Activar'}</button></div></div><div class="rec-body small"><p style="margin:0">${esc(s.category)}. ${s.chars.length} personajes, ${s.chars.reduce((n, c) => n + c.qs.length, 0)} preguntas, ${s.conclusions.length} conclusiones posibles.</p></div></div>`; }).join('')}</div>
+    <p class="notice block">El editor de escenarios (personajes, preguntas, puntajes y retroalimentación) se construye en la siguiente iteración. Desactivar un escenario no borra los resultados ya guardados por los estudiantes.</p>`;
+  if (tab === 'contenidos') body = `<h3>Lista de comprobación de evidencias</h3>
+    <div class="rec-list">${D.checklist.map(c => `<div class="rec neutral"><div class="rec-head"><span>${esc(c.name)} <span class="muted small">(${esc(stageLabel(c.stage))})</span></span><button class="btn sm ghost danger" data-action="delCheck" data-id="${c.id}">Quitar</button></div></div>`).join('')}</div>
+    <form class="addform block" data-form="addCheck"><div class="grid2"><label class="field">Evidencia requerida<input name="name" required></label><label class="field">Etapa<select name="stage">${opts(STAGES.filter(s => s.n && s.n < 6).map(s => [s.id, s.label]))}</select></label></div><div><button class="btn primary sm" type="submit">Agregar requisito</button></div></form>
+    <h3 class="block">Rúbrica docente</h3>
+    <div class="rec-list">${D.rubric.map(r => `<div class="rec neutral"><div class="rec-head"><span>${esc(r.name)}</span><button class="btn sm ghost danger" data-action="delRub" data-id="${r.id}">Quitar</button></div></div>`).join('')}</div>
+    <form class="row block" data-form="addRub" style="max-width:520px"><input name="name" required placeholder="Nuevo criterio de la rúbrica" aria-label="Nuevo criterio de la rúbrica" style="flex:1"><button class="btn primary sm" type="submit">Agregar criterio</button></form>`;
+  if (tab === 'config') body = `<form class="panel stack" data-form="config" style="max-width:560px">
+    <label class="field">Tamaño máximo por archivo (MB)<input type="number" name="maxMB" min="1" max="100" required value="${D.config.maxMB}"></label>
+    <label class="field">Formatos permitidos<input name="types" required value="${esc(D.config.types)}"><small>Separados por comas. El servidor vuelve a validar el tipo real del archivo.</small></label>
+    <div><button class="btn primary sm" type="submit">Guardar configuración</button></div></form>`;
+  if (tab === 'auditoria') body = `<ul class="audit">${D.audit.map(a => `<li><span class="muted">${fmtDate(a.date)} ${fmtTime(a.date)}</span><span><b>${esc(a.by)}</b>: ${esc(a.action)}</span></li>`).join('')}</ul>`;
+  return `<main class="page"><div class="page-head"><div><h1>Administración</h1><p class="lead">Gestiona cuentas, categorías, simulaciones y contenidos de la plataforma.</p></div></div>
+    <div class="tabs admin-tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${tab === k}" data-action="adminTab" data-tab="${k}">${l}</button>`).join('')}</div>
+    ${body}
+    <p class="muted small block">En producción, cada permiso se verifica en el servidor; esta pantalla solo muestra las opciones a las que el rol tiene acceso.</p></main>`;
+}
+
+/* ---------- Toast ---------- */
+let toastT;
+function toast(msg, err){ const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : ''); clearTimeout(toastT); toastT = setTimeout(() => t.className = 'toast', 2800); }
+
+/* ---------- Enlace de datos ---------- */
+const guards = {
+  hyp(item, val){ if ((val === 'validada' || val === 'refutada') && !filled(item.result)) { toast('Registra el resultado obtenido antes de cambiar el estado.', true); return false; } return true; }
+};
+function bindValue(el){
+  const p = cur(); if (!p) return;
+  const val = el.type === 'checkbox' ? el.checked : el.value;
+  if (el.dataset.bind) setPath(p, el.dataset.bind, val);
+  else if (el.dataset.coll) {
+    const arr = getPath(p, el.dataset.coll) || [], it = arr.find(x => x.id === el.dataset.id);
+    if (!it) return;
+    if (el.dataset.guard && !guards[el.dataset.guard](it, val)) { el.value = getPath(it, el.dataset.field); return; }
+    const v = el.dataset.field.startsWith('scores.') ? (val === '' ? '' : +val) : val;
+    setPath(it, el.dataset.field, v);
+  } else return;
+  API.touch(p);
+}
+const timers = new WeakMap();
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.tagName === 'SELECT' || el.type === 'radio' || el.type === 'checkbox' || el.type === 'file') return;
+  if (!el.dataset.bind && !el.dataset.coll) return;
+  clearTimeout(timers.get(el));
+  timers.set(el, setTimeout(() => bindValue(el), 450));
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.admin === 'role') {
+    const u = Store.data.users.find(x => x.id === el.dataset.id); u.role = el.value; API.audit(`Cambió el rol de ${u.name} a ${ROLE_LABEL[u.role]}`); toast('Rol actualizado'); return;
+  }
+  if (!el.dataset.bind && !el.dataset.coll) return;
+  clearTimeout(timers.get(el));
+  bindValue(el);
+  if (el.dataset.rerender) rerender();
+});
+
+/* ---------- Agregar elementos a colecciones ---------- */
+const addHooks = {
+  'dt.prototipar.versions'(o, f, p){ o.v = p.dt.prototipar.versions.reduce((m, v) => Math.max(m, v.v), 0) + 1; },
+  'dt.idear.ideas'(o){ o.scores = {}; o.discarded = false; },
+  'hypotheses'(o){ o.status = 'pendiente'; o.result = ''; },
+  'activities'(o){ o.status = 'pendiente'; if (o.end < o.start) { toast('La fecha de fin no puede ser anterior a la de inicio.', true); return false; } },
+  'validations'(o, f, p){
+    if (o.copyResult && o.hypothesisId) { const h = p.hypotheses.find(x => x.id === o.hypothesisId); if (h) h.result = (h.result ? h.result + '\n' : '') + o.results; }
+    delete o.copyResult;
+    if (o.cost && isNaN(+o.cost.replace(',', '.'))) { toast('El costo debe ser un número.', true); return false; }
+  },
+  'evidences'(o, f){
+    // En producción: el archivo se sube a almacenamiento privado (URL prefirmada) y aquí solo se guardan los metadatos.
+    const file = f.querySelector('input[type=file]').files[0], cfg = Store.data.config;
+    if (!file) { toast('Elige un archivo.', true); return false; }
+    const ext = file.name.split('.').pop().toLowerCase(), allowed = cfg.types.split(',').map(x => x.trim().toLowerCase());
+    if (!allowed.includes(ext)) { toast(`El formato .${ext} no está permitido.`, true); return false; }
+    if (file.size > cfg.maxMB * 1048576) { toast(`El archivo supera el máximo de ${cfg.maxMB} MB.`, true); return false; }
+    Object.assign(o, {fileName:file.name, size:file.size, mime:file.type, date:nowISO()});
+    delete o.file; S.prefill = null;
+  }
+};
+function addItem(f){
+  const p = cur(); if (!p) return;
+  if (!f.checkValidity()) { f.reportValidity(); return; }
+  const coll = f.dataset.add, fd = new FormData(f);
+  const o = {id:uid('i'), createdAt:nowISO(), author:me().name};
+  for (const [k, v] of fd.entries()) { if (typeof v === 'string') o[k] = v.trim(); }
+  f.querySelectorAll('input[type=checkbox]').forEach(c => o[c.name] = c.checked);
+  if (addHooks[coll] && addHooks[coll](o, f, p) === false) return;
+  getPath(p, coll).push(o);
+  API.touch(p); toast(f.dataset.msg || 'Guardado'); rerender();
+}
+
+/* ---------- Formularios con lógica propia ---------- */
+const forms = {
+  login(f){
+    const email = f.elements.email.value.trim().toLowerCase();
+    const u = Store.data.users.find(x => x.email.toLowerCase() === email);
+    if (!email) return toast('Escribe tu correo.', true);
+    if (!u) return toast('No encontramos una cuenta con ese correo.', true);
+    if (!u.active) return toast('Tu cuenta está desactivada. Consulta con la administración.', true);
+    loginAs(u.id);
+  },
+  newProject(f){
+    if (!f.checkValidity()) return f.reportValidity();
+    const p = API.create({name:f.elements.name.value.trim(), category:f.elements.category.value, description:f.elements.description.value.trim()});
+    $('#dlgNew').close(); S.projectId = p.id; S.section = 'preparacion'; toast('Proyecto creado'); render();
+  },
+  addCrit(f){ const p = cur(); p.dt.idear.criteria.push({id:uid('c'), name:f.elements.name.value.trim()}); API.touch(p); rerender(); },
+  simConclude(f){
+    const idx = +new FormData(f).get('c'); if (isNaN(idx) || f.elements.c.value === '') return toast('Elige una conclusión.', true);
+    const sc = SCENARIOS.find(s => s.id === S.sim.scenarioId), c = sc.conclusions[idx];
+    const items = S.sim.asked.map(a => { const q = sc.chars.find(x => x.id === a.c).qs[a.q]; return {q:q.q, kind:q.kind, fb:q.fb, pts:q.pts, a:q.a, who:sc.chars.find(x => x.id === a.c).name}; });
+    const diversity = new Set(S.sim.asked.map(a => a.c)).size === sc.chars.length;
+    const score = items.reduce((s, i) => s + i.pts, 0) + (diversity ? 2 : 0) + c.pts;
+    const best = sc.chars.flatMap(ch => ch.qs.map(q => q.pts)).sort((a, b) => b - a).slice(0, sc.maxQ).reduce((s, n) => s + n, 0) + 2 + Math.max(...sc.conclusions.map(x => x.pts));
+    S.sim.result = {items, diversity, score, max:best, conclusion:c.text, cfb:c.fb, correct:c.pts === Math.max(...sc.conclusions.map(x => x.pts))};
+    S.sim.phase = 'result'; rerender();
+  },
+  simSave(f){
+    const p = cur(), r = S.sim.result, sc = SCENARIOS.find(s => s.id === S.sim.scenarioId);
+    p.simulations.push({id:uid('sm'), scenarioId:sc.id, title:sc.title, date:nowISO(), score:r.score, max:r.max, conclusion:r.conclusion, correct:r.correct, reflection:f.elements.reflection.value.trim()});
+    if (f.elements.copy.checked) {
+      p.dt.empatizar.records.push({id:uid('e'), date:today(), type:'Entrevista', origin:'simulada', person:'Perfiles simulados: ' + [...new Set(r.items.map(i => i.who))].join(', '), findings:r.items.map(i => `${i.who}: ${i.a}`).join(' '), author:me().name});
+    }
+    S.sim = null; API.touch(p); toast('Resultado de la práctica guardado'); rerender();
+  },
+  comment(f){
+    if (!f.checkValidity()) return f.reportValidity();
+    const p = API.get(S.reviewId);
+    p.comments.push({id:uid('cm'), by:me().id, byName:me().name, stage:f.elements.stage.value, text:f.elements.text.value.trim(), date:nowISO()});
+    Store.save(); toast('Comentario enviado'); rerender();
+  },
+  evaluate(f){
+    if (!f.checkValidity()) return f.reportValidity();
+    const p = API.get(S.reviewId), scores = {};
+    Store.data.rubric.forEach(r => scores[r.id] = +f.elements[r.id].value);
+    p.evaluations.push({id:uid('ev'), teacherId:me().id, teacherName:me().name, date:nowISO(), scores, notes:f.elements.notes.value.trim()});
+    Store.save(); toast('Evaluación guardada'); rerender();
+  },
+  addUser(f){
+    if (!f.checkValidity()) return f.reportValidity();
+    const email = f.elements.email.value.trim().toLowerCase();
+    if (Store.data.users.some(u => u.email.toLowerCase() === email)) return toast('Ya existe una cuenta con ese correo.', true);
+    const u = {id:uid('u'), name:f.elements.name.value.trim(), email, role:f.elements.role.value, active:true};
+    Store.data.users.push(u); API.audit(`Creó la cuenta de ${u.name} con rol ${ROLE_LABEL[u.role]}`); toast('Cuenta creada'); rerender();
+  },
+  addCat(f){ const n = f.elements.name.value.trim(); if (Store.data.categories.some(c => c.name.toLowerCase() === n.toLowerCase())) return toast('Esa categoría ya existe.', true); Store.data.categories.push({id:uid('k'), name:n, active:true}); API.audit(`Creó la categoría «${n}»`); rerender(); },
+  addCheck(f){ Store.data.checklist.push({id:uid('ev'), name:f.elements.name.value.trim(), stage:f.elements.stage.value}); API.audit(`Agregó la evidencia requerida «${f.elements.name.value.trim()}»`); rerender(); },
+  addRub(f){ Store.data.rubric.push({id:uid('r'), name:f.elements.name.value.trim()}); API.audit(`Agregó el criterio de rúbrica «${f.elements.name.value.trim()}»`); rerender(); },
+  config(f){ Store.data.config = {maxMB:+f.elements.maxMB.value, types:f.elements.types.value.trim()}; API.audit(`Cambió los límites de archivos: ${f.elements.maxMB.value} MB, ${f.elements.types.value.trim()}`); toast('Configuración guardada'); rerender(); }
+};
+document.addEventListener('submit', e => {
+  const f = e.target;
+  if (f.dataset.add) { e.preventDefault(); addItem(f); }
+  else if (f.dataset.form && forms[f.dataset.form]) { e.preventDefault(); forms[f.dataset.form](f); }
+});
+
+/* ---------- Acciones ---------- */
+function loginAs(id){ S.userId = id; Session.set(id); S.projectId = null; S.reviewId = null; S.section = 'resumen'; S.sim = null; render(); }
+const actions = {
+  loginAs:t => loginAs(t.dataset.id),
+  logout:() => { S.userId = null; Session.set(null); S.projectId = null; S.lastSave = null; render(); },
+  forgot:() => toast('Si el correo está registrado, recibirás un enlace para crear una nueva contraseña.'),
+  resetDemo:() => { if (confirm('¿Restablecer todos los datos de la demo?')) { Store.reset(); toast('Datos restablecidos'); render(); } },
+  theme:() => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('lve-theme', r.dataset.theme); } catch (e) {} },
+  home:() => { S.projectId = null; S.reviewId = null; S.sim = null; render(); },
+  openNew:() => $('#dlgNew').showModal(),
+  closeNew:() => $('#dlgNew').close(),
+  openProject:t => { S.projectId = t.dataset.id; S.section = 'resumen'; render(); },
+  go:t => { S.section = t.dataset.sec; render(); },
+  dtTab:t => { S.dtTab = t.dataset.tab; rerender(); },
+  del:t => {
+    if (!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
+    const p = cur(), arr = getPath(p, t.dataset.coll), i = arr.findIndex(x => x.id === t.dataset.id);
+    if (i > -1) arr.splice(i, 1);
+    if (t.dataset.coll === 'hypotheses') p.validations.forEach(v => { if (v.hypothesisId === t.dataset.id) v.hypothesisId = ''; });
+    API.touch(p); toast('Registro eliminado'); rerender();
+  },
+  delCrit:t => { const p = cur(), c = p.dt.idear.criteria; if (c.length <= 1) return toast('Debe quedar al menos un criterio.', true); c.splice(c.findIndex(x => x.id === t.dataset.id), 1); API.touch(p); rerender(); },
+  discard:t => { const p = cur(); p.dt.idear.ideas.find(x => x.id === t.dataset.id).discarded = true; API.touch(p); toast('Idea descartada. La encontrarás al final.'); rerender(); },
+  restore:t => { const p = cur(); p.dt.idear.ideas.find(x => x.id === t.dataset.id).discarded = false; API.touch(p); rerender(); },
+  snapshot:t => { const p = cur(); getPath(p, t.dataset.dst).push({id:uid('vs'), date:nowISO(), data:JSON.parse(JSON.stringify(getPath(p, t.dataset.src)))}); API.touch(p); toast('Versión guardada'); rerender(); },
+  attachFor:t => { S.prefill = {stage:t.dataset.stage, req:t.dataset.req, title:t.dataset.title}; S.section = 'evidencias'; render(); },
+  download:() => toast('En producción se descarga el archivo desde el almacenamiento privado.'),
+  print:() => window.print(),
+  simStart:t => { S.sim = {scenarioId:t.dataset.id, phase:'interview', asked:[], char:null}; rerender(); },
+  simChar:t => { S.sim.char = t.dataset.id; rerender(); },
+  simAsk:t => { S.sim.asked.push({c:S.sim.char, q:+t.dataset.q}); rerender(); },
+  simToConclude:() => { S.sim.phase = 'conclude'; rerender(); },
+  simBack:() => { S.sim.phase = 'interview'; rerender(); },
+  simCancel:() => { S.sim = null; rerender(); },
+  review:t => { S.reviewId = t.dataset.id || null; render(); },
+  adminTab:t => { S.adminTab = t.dataset.tab; rerender(); },
+  toggleUser:t => { const u = Store.data.users.find(x => x.id === t.dataset.id); u.active = !u.active; API.audit(`${u.active ? 'Activó' : 'Desactivó'} la cuenta de ${u.name}`); rerender(); },
+  toggleCat:t => { const c = Store.data.categories.find(x => x.id === t.dataset.id); c.active = !c.active; API.audit(`${c.active ? 'Activó' : 'Desactivó'} la categoría «${c.name}»`); rerender(); },
+  toggleScen:t => { let s = Store.data.scenarios.find(x => x.id === t.dataset.id); if (!s) { s = {id:t.dataset.id, active:false}; Store.data.scenarios.push(s); } s.active = !s.active; API.audit(`${s.active ? 'Activó' : 'Desactivó'} el escenario «${SCENARIOS.find(x => x.id === s.id).title}»`); rerender(); },
+  delCheck:t => { const l = Store.data.checklist, c = l.find(x => x.id === t.dataset.id); l.splice(l.indexOf(c), 1); API.audit(`Quitó la evidencia requerida «${c.name}»`); rerender(); },
+  delRub:t => { const l = Store.data.rubric, c = l.find(x => x.id === t.dataset.id); if (l.length <= 1) return toast('La rúbrica necesita al menos un criterio.', true); l.splice(l.indexOf(c), 1); API.audit(`Quitó el criterio de rúbrica «${c.name}»`); rerender(); }
+};
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-action]');
+  if (!t || !actions[t.dataset.action]) return;
+  e.preventDefault(); actions[t.dataset.action](t, e);
+});
+
+/* ---------- Inicio ---------- */
+try { const th = localStorage.getItem('lve-theme'); if (th) document.documentElement.dataset.theme = th; } catch (e) {}
+Store.load();
+S.userId = Session.get();
+render();
+</script>
+</body>
+</html>
